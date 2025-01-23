@@ -16,6 +16,6 @@ const contactSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Contact = mongoose.model("students", contactSchema);
+const Contact = mongoose.model("contacts", contactSchema);
 
 export default Contact;

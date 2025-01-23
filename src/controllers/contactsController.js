@@ -1,7 +1,9 @@
 import contactsService from "../services/contacts.js";
 
 export const getContacts = async (req, res) => {
+  console.log("GET /contacts called");
   const contacts = await contactsService.getAllContacts();
+  console.log("Found contacts:", contacts);
   res.status(200).json({
     status: 200,
     message: "Successfully found contacts!",
@@ -11,10 +13,13 @@ export const getContacts = async (req, res) => {
 
 export const getContact = async (req, res) => {
   const { contactId } = req.params;
+  console.log(`GET /contacts/${contactId} called`);
   const contact = await contactsService.getContactById(contactId);
   if (!contact) {
+    console.log("Contact not found");
     return res.status(404).json({ message: "Contact not found" });
   }
+  console.log("Found contact:", contact);
   res.status(200).json({
     status: 200,
     message: `Successfully found contact with id ${contactId}!`,
@@ -23,16 +28,3 @@ export const getContact = async (req, res) => {
 };
 
 export default { getContacts, getContact };
-
-// const getContacts = async (req, res) => {
-//   try {
-//     const contacts = await Contact.find(); 
-//     res.status(200).json({
-//       status: 200,
-//       message: "Successfully found students!",
-//       data: contacts,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ message: "Server error", error: error.message });
-//   }
-// };
