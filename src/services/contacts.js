@@ -13,4 +13,8 @@ const getContactById = async (id) => {
   return contact;
 };
 
-export default { getAllContacts, getContactById };
+const createContact = async (contactData) => {
+  return await Contact.create(contactData);
+};
+
+export default { getAllContacts, getContactById, createContact };

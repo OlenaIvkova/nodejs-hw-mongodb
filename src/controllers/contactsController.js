@@ -27,4 +27,31 @@ export const getContact = async (req, res) => {
   });
 };
 
+export const createContact = async (req, res) => {
+  try {
+    const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+
+    if (!name || !phoneNumber) {
+      return res.status(400).json({ message: "Name and phone number are required" });
+    }
+
+    const newContact = await contactsService.createContact({
+      name,
+      phoneNumber,
+      email,
+      isFavourite,
+      contactType,
+    });
+
+    res.status(201).json({
+      status: 201,
+      message: "Contact created successfully!",
+      data: newContact,
+    });
+  } catch (error) {
+    console.error("Error creating contact:", error.message);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export default { getContacts, getContact };
