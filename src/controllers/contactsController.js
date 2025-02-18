@@ -1,7 +1,8 @@
 import createError from "http-errors";
 import contactsService from "../services/contacts.js";
 import Contact from "../db/contactModel.js"; 
-import { contactSchema } from "../schemas/contactSchema.js";
+import contactSchema from "../schemas/contactValidation.js";
+// import { validateContact } from '../schemas/contactValidation.js';
 // import Joi from "joi";
 
 
