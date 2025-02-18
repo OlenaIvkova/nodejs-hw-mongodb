@@ -17,4 +17,14 @@ const createContact = async (contactData) => {
   return await Contact.create(contactData);
 };
 
-export default { getAllContacts, getContactById, createContact };
+const updateContact = async (contactId, contactData) => {
+  const updatedContact = await Contact.findByIdAndUpdate(contactId, contactData, { new: true });
+  return updatedContact;
+};
+
+
+const deleteContact = async (contactId) => {
+  return await Contact.findByIdAndDelete(contactId);
+};
+
+export default { getAllContacts, getContactById, createContact, updateContact, deleteContact };
