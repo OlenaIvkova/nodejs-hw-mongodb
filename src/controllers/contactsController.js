@@ -7,7 +7,7 @@ import contactSchema from "../schemas/contactValidation.js";
 const getContacts = async (req, res) => {
   const { page = 1, perPage = 10, sortBy = 'name', sortOrder = 'asc', type, isFavourite } = req.query;
   
-  const query = {};
+  const query = { userId: req.user._id };
   if (type) query.contactType = type;
   if (isFavourite !== undefined) query.isFavourite = isFavourite === 'true';
 
@@ -39,21 +39,23 @@ const getContacts = async (req, res) => {
 
 const getContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await contactsService.getContactById(contactId);
+  const contact = await contactsService.getContactById(contactId, req.user._id);
   if (!contact) return next(createError(404, "Contact not found"));
   res.status(200).json({ status: 200, message: "Successfully found contact!", data: contact });
 };
 
-
 const createContact = async (req, res, next) => {
   try {
-    
     const { error } = contactSchema.validate(req.body);
     if (error) {
       return next(createError(400, error.details[0].message));
     }
 
-    const newContact = await contactsService.createContact(req.body);
+    const newContact = await contactsService.createContact({
+      ...req.body,
+      userId: req.user._id 
+    });
+
     res.status(201).json({ status: 201, message: "Successfully created a contact!", data: newContact });
   } catch (error) {
     next(error);
@@ -70,7 +72,8 @@ const updateContact = async (req, res, next) => {
     return next(createError(400, error.details[0].message));
   }
 
-  const updatedContact = await contactsService.updateContact(contactId, req.body);
+  const updatedContact = await contactsService.updateContact(contactId, req.body, req.user._id);
+
   if (!updatedContact) return next(createError(404, "Contact not found"));
   res.status(200).json({ status: 200, message: "Successfully patched a contact!", data: updatedContact });
 };
@@ -78,7 +81,9 @@ const updateContact = async (req, res, next) => {
 
 const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const deletedContact = await contactsService.deleteContact(contactId);
+
+  const deletedContact = await contactsService.deleteContact(contactId, req.user._id);
+  
   if (!deletedContact) return next(createError(404, "Contact not found"));
   res.status(204).send();
 };

@@ -2,10 +2,12 @@ import express from "express";
 import cors from "cors";
 import pino from "pino-http";
 import contactsRouter from "./routes/contact.js";
-import authRouter from "./routes/authRoutes.js.js"; 
+import authRouter from "./routes/authRoutes.js"; 
 import errorHandler from "./middlewares/errorHandler.js";
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 
+import dotenv from 'dotenv';
+dotenv.config();
 
 const setupServer = () => {
   const app = express();

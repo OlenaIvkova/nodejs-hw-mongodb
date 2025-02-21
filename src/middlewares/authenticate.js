@@ -16,7 +16,7 @@ const authenticate = (req, res, next) => {
   }
 
   
-  jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
       return next(createHttpError(401, "Access token expired"));
     }

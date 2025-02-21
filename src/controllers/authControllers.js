@@ -3,11 +3,10 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Session from "../models/Session.js"; 
-import { generateTokens } from "../services/authServices.js"; 
-import { registerUser } from "../services/authServices.js"; 
+import { registerUser, generateTokens } from "../services/authServices.js";  
 
 
-const { JWT_SECRET, JWT_REFRESH_SECRET } = process.env;
+const { JWT_REFRESH_SECRET } = process.env;
 
 export const register = async (req, res, next) => {
   try {
@@ -45,27 +44,32 @@ export const login = async (req, res, next) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return next(createHttpError(401, "Invalid email or password"));
+      throw createHttpError(401, "Invalid email or password");
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return next(createHttpError(401, "Invalid email or password"));
+      throw createHttpError(401, "Invalid email or password");
     }
 
-    const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
+    // const accessToken = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "15m" });
+    // const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    
+    const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    
+    // const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
+    // const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: "30d" });
 
-    const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: "30d" });
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
+    console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET);
 
-    await Session.findOneAndDelete({ userId: user._id });
-
-    const session = new Session({ userId: user._id, refreshToken });
-    await session.save();
+    // const { accessToken, refreshToken } = await generateTokens(user);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
     });
 
     res.status(200).json({
@@ -95,13 +99,6 @@ export const refresh = async (req, res, next) => {
       if (!user) {
         throw createHttpError(401, "User not found");
       }
-
-      const session = await Session.findOne({ userId: user._id });
-      if (!session) {
-        throw createHttpError(401, "Session not found");
-      }
-
-      await session.remove();
 
       const { accessToken, refreshToken: newRefreshToken } = await generateTokens(user);
 

@@ -38,7 +38,12 @@ export const generateTokens = async (user) => {
   
   await Session.findOneAndUpdate(
     { userId: user._id },
-    { refreshToken },
+    {
+      accessToken,
+      refreshToken,
+      accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), 
+      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), 
+    },
     { upsert: true }
   );
 
