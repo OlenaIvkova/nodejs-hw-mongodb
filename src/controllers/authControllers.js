@@ -2,30 +2,44 @@ import createHttpError from "http-errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import Session from "../models/session.js"; 
-import generateTokens from "../services/auth.js"; 
-// import authService from "../services/auth.js";
+import Session from "../models/Session.js"; 
+import { generateTokens } from "../services/authServices.js"; 
+import { registerUser } from "../services/authServices.js"; 
+
 
 const { JWT_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const authService = require("../services/auth.js");
-
-const registerUser = async (req, res, next) => {
+export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
-    const newUser = await authService.registerUser({ name, email, password });
-    
-    res.status(201).json({ message: "User created", user: newUser });
+
+    if (!name || !email || !password) {
+      throw createHttpError(400, "All fields are required");
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw createHttpError(409, "Email in use");
+    }
+
+    const newUser = await registerUser({ name, email, password });
+
+    res.status(201).json({
+      status: "success",
+      message: "Successfully registered a user!",
+      data: {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        createdAt: newUser.createdAt,
+      },
+    });
   } catch (error) {
     next(error);
   }
 };
 
-module.exports = {
-  registerUser,
-};
-
-const loginUser = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
@@ -64,7 +78,7 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-const refreshUser = async (req, res, next) => {
+export const refresh = async (req, res, next) => {
   try {
     
     const { refreshToken } = req.cookies;
@@ -108,7 +122,7 @@ const refreshUser = async (req, res, next) => {
   }
 };
 
-const logoutUser = async (req, res, next) => {
+export const logout = async (req, res, next) => {
   try {
     
     const { refreshToken } = req.cookies;
@@ -134,5 +148,3 @@ const logoutUser = async (req, res, next) => {
     next(error);
   }
 };
-
-export default { loginUser, registerUser, refreshUser, logoutUser };

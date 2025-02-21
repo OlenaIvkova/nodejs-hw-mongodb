@@ -4,7 +4,7 @@ const contactSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Нове поле userId
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 }, { timestamps: true });
 
 const Contact = mongoose.model("Contact", contactSchema);

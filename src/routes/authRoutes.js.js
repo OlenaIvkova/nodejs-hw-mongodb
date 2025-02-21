@@ -1,21 +1,17 @@
 import express from "express";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import Session from "../models/session.js";
-import { validateRegister } from '../middlewares/validateRegister.js'; 
-import { validateLogin } from '../middlewares/validateLogin.js'; 
-// import registerUsers from "../controllers/auth.js";
-// import loginUser from "../controllers/auth.js";
-import authController from "../controllers/auth.js";
+import Session from "../models/Session.js";
+import { validateRegister } from "../middlewares/validateRegister.js"; 
+import { validateLogin } from "../middlewares/validateLogin.js"; 
+
 
 const router = express.Router();
-
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "your-refresh-secret-key";
 
-
-router.post("/register",  validateRegister, authController.registerUser, async (req, res) => {
+router.post("/register", validateRegister, async (req, res) => {
   try {
     const { name, email, password } = req.body;
     if (!name || !email || !password) {
@@ -36,8 +32,7 @@ router.post("/register",  validateRegister, authController.registerUser, async (
   }
 });
 
-
-router.post("/login", validateLogin, authController.loginUser, async (req, res) => {
+router.post("/login", validateLogin, async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -63,12 +58,18 @@ router.post("/login", validateLogin, authController.loginUser, async (req, res) 
   }
 });
 
-
-router.post("/refresh", authController.refreshUser, async (req, res) => {
+router.post("/refresh", async (req, res) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
       return res.status(401).json({ message: "Необхідний рефреш-токен" });
+    }
+
+     let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+    } catch {
+      return res.status(403).json({ message: "Недійсний токен" });
     }
 
     const session = await Session.findOne({ refreshToken });
@@ -76,26 +77,34 @@ router.post("/refresh", authController.refreshUser, async (req, res) => {
       return res.status(403).json({ message: "Недійсний токен" });
     }
 
-    jwt.verify(refreshToken, JWT_REFRESH_SECRET, async (err, decoded) => {
-      if (err) return res.status(403).json({ message: "Недійсний токен" });
+    const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: "15m" });
+    session.accessToken = newAccessToken;
+    session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000);
+    await session.save();
 
-      const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: "15m" });
-      const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_REFRESH_SECRET, { expiresIn: "7d" });
-
-      session.accessToken = newAccessToken;
-      session.refreshToken = newRefreshToken;
-      session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000);
-      await session.save();
-
-      res.json({ accessToken: newAccessToken, refreshToken: newRefreshToken });
-    });
+ res.json({ accessToken: newAccessToken });
   } catch (error) {
     res.status(500).json({ message: "Помилка сервера", error });
   }
 });
 
+//     jwt.verify(refreshToken, JWT_REFRESH_SECRET, async (err, decoded) => {
+//       if (err) return res.status(403).json({ message: "Недійсний токен" });
 
-router.post("/logout", authController.logoutUser, async (req, res) => {
+//       const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: "15m" });
+
+//       session.accessToken = newAccessToken;
+//       session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000);
+//       await session.save();
+
+//       res.json({ accessToken: newAccessToken });
+//     });
+//   } catch (error) {
+//     res.status(500).json({ message: "Помилка сервера", error });
+//   }
+// });
+
+router.post("/logout", async (req, res) => {
   try {
     const { refreshToken } = req.body;
     await Session.deleteOne({ refreshToken });

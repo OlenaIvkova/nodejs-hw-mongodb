@@ -15,11 +15,13 @@ const authenticate = (req, res, next) => {
     return next(createHttpError(401, "Access token missing"));
   }
 
+  
   jwt.verify(token, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
     if (err) {
       return next(createHttpError(401, "Access token expired"));
     }
 
+    
     req.user = decoded; 
     next(); 
   });

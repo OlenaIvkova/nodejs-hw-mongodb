@@ -29,8 +29,6 @@ const User = mongoose.model("User", userSchema);
 
 export default User;
 
-
-
 // const { Schema, model } = require("mongoose");
 // const bcrypt = require("bcrypt");
 

@@ -1,11 +1,13 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import Session from "../models/session.js"; 
+import Session from "../models/Session.js"; 
+
 
 const { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } = process.env;
 
-const registerUser = async ({ name, email, password }) => {
+
+export const registerUser = async ({ name, email, password }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const user = new User({
@@ -19,17 +21,21 @@ const registerUser = async ({ name, email, password }) => {
   return user;
 };
 
-const generateTokens = async (user) => {
+
+export const generateTokens = async (user) => {
   const payload = { userId: user._id };
 
+  
   const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, {
     expiresIn: "15m", 
   });
 
+  
   const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, {
     expiresIn: "30d", 
   });
 
+  
   await Session.findOneAndUpdate(
     { userId: user._id },
     { refreshToken },
@@ -38,5 +44,3 @@ const generateTokens = async (user) => {
 
   return { accessToken, refreshToken };
 };
-
-export default { registerUser, generateTokens };
