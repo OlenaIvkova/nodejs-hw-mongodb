@@ -1,6 +1,6 @@
 import { body, validationResult } from "express-validator";
 import createHttpError from "http-errors";
-import  User from "../models/User.js";
+import  User from "../models/user.js";
 
 export const validateRegister = [
   body("name").notEmpty().withMessage("Name is required"),
