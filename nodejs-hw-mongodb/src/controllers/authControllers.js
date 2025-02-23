@@ -55,13 +55,8 @@ export const login = async (req, res, next) => {
     const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: "15m" });
     const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, { expiresIn: "30d" });
     
-    // const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "15m" });
-    // const refreshToken = jwt.sign({ userId: user._id }, JWT_REFRESH_SECRET, { expiresIn: "30d" });
-
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
     console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET);
-
-    // const { accessToken, refreshToken } = await generateTokens(user);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
