@@ -1,46 +1,28 @@
 {
   "name": "nodejs-hw-mongodb",
   "version": "1.0.0",
-  "description": "goit-node-js",
-  "type": "module",
   "main": "index.js",
   "scripts": {
-    "get-all": "node src/scripts/getAllContacts.js",
-    "generate": "node src/scripts/generateContacts.js",
-    "add-one": "node src/scripts/addOneContact.js",
-    "count": "node src/scripts/countContacts.js",
-    "remove-last": "node src/scripts/removeLastContact.js",
-    "remove-all": "node src/scripts/removeAllContacts.js",
-    "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "YOUR_NAME <YOUR_EMAIL>",
   "license": "ISC",
-  "devDependencies": {
-    "@eslint/js": "^9.18.0",
-    "@faker-js/faker": "^9.3.0",
-    "eslint": "^9.21.0",
-    "globals": "^15.14.0",
-    "nodemon": "^3.1.9",
-    "pino-pretty": "^13.0.0",
-    "prettier": "^3.5.2"
-  },
+  "description": "",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "bcryptjs": "^3.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "express-validator": "^7.2.1",
-    "handlebars": "^4.7.8",
-    "http-errors": "^2.0.0",
-    "joi": "^17.13.3",
-    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
-    "nodemailer": "^6.10.0",
     "pino": "^9.6.0",
     "pino-http": "^10.4.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.21.0",
+    "nodemon": "^3.1.9",
+    "pino-pretty": "^13.0.0",
+    "prettier": "^3.5.2"
   }
 }
