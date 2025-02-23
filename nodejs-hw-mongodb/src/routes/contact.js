@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get("/", authenticate, async (req, res, next) => {
   try {
-    const contacts = await Contact.find({ userId: req.user._id }); 
+    const contacts = await Contact.findOne({ _id: req.params.id, userId: req.user._id });; 
     res.json(contacts);
   } catch (error) {
     next(error);
@@ -41,9 +41,9 @@ router.post("/", authenticate, async (req, res, next) => {
 router.patch("/:id", authenticate, async (req, res, next) => {
   try {
     const updatedContact = await Contact.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user._id }, 
-      req.body,
-      { new: true }
+  { _id: req.params.id, userId: req.user._id },
+  req.body,
+  { new: true }
     );
 
     if (!updatedContact) {

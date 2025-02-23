@@ -3,8 +3,11 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import createHttpError from "http-errors";
 import User from "../models/user.js";
+import { register } from "../controllers/authControllers.js";
 
 const router = express.Router();
+
+router.post("/register", register);
 
 router.post("/login", async (req, res, next) => {
   try {

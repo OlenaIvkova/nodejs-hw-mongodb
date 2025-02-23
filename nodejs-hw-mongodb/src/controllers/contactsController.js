@@ -39,7 +39,7 @@ const getContacts = async (req, res) => {
 
 const getContact = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await contactsService.getContactById(contactId, req.user._id);
+  const contact = await Contact.findOne({ _id: contactId, userId: req.user._id });
   if (!contact) return next(createError(404, "Contact not found"));
   res.status(200).json({ status: 200, message: "Successfully found contact!", data: contact });
 };
@@ -72,7 +72,11 @@ const updateContact = async (req, res, next) => {
     return next(createError(400, error.details[0].message));
   }
 
-  const updatedContact = await contactsService.updateContact(contactId, req.body, req.user._id);
+  const updatedContact = await Contact.findOneAndUpdate(
+  { _id: contactId, userId: req.user._id }, 
+  req.body, 
+  { new: true }
+);
 
   if (!updatedContact) return next(createError(404, "Contact not found"));
   res.status(200).json({ status: 200, message: "Successfully patched a contact!", data: updatedContact });
@@ -82,7 +86,7 @@ const updateContact = async (req, res, next) => {
 const deleteContact = async (req, res, next) => {
   const { contactId } = req.params;
 
-  const deletedContact = await contactsService.deleteContact(contactId, req.user._id);
+  const deletedContact = await Contact.findOneAndDelete({ _id: contactId, userId: req.user._id });
   
   if (!deletedContact) return next(createError(404, "Contact not found"));
   res.status(204).send();
