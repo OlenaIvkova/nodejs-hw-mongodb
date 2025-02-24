@@ -5,7 +5,7 @@ import contactsRouter from "./routes/contact.js";
 import authRouter from "./routes/authRoutes.js"; 
 import errorHandler from "./middlewares/errorHandler.js";
 import notFoundHandler from "./middlewares/notFoundHandler.js";
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -27,13 +27,13 @@ const setupServer = () => {
   app.use(notFoundHandler);
   app.use(errorHandler);
 
-  mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-      app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
-    })
-    .catch((error) => console.log(error));
+  // mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  //   .then(() => {
+  //     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+  //   })
+  //   .catch((error) => console.log(error));
   
-  // app.listen(PORT, () => console.log(`🚀 Server is running on port ${PORT}`));
+  app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 };
 
 export default setupServer;
