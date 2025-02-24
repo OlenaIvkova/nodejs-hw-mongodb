@@ -58,6 +58,12 @@ export const login = async (req, res, next) => {
     console.log('JWT_SECRET:', process.env.JWT_SECRET);
     console.log('JWT_REFRESH_SECRET:', process.env.JWT_REFRESH_SECRET);
 
+    await Session.findOneAndUpdate(
+      { userId: user._id }, 
+      { refreshToken },
+      { upsert: true, new: true }
+    );
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -82,17 +88,24 @@ export const refresh = async (req, res, next) => {
       throw createHttpError(401, "No refresh token, please log in again");
     }
 
+    const session = await Session.findOne({ refreshToken });
+    if (!session) {
+      throw createHttpError(401, "Invalid or expired refresh token");
+    }
+
     jwt.verify(refreshToken, JWT_REFRESH_SECRET, async (err, decoded) => {
       if (err) {
         throw createHttpError(401, "Invalid or expired refresh token");
       }
 
-      const user = await User.findById(decoded.userId);
+      const user = await User.findOne({ _id: decoded.userId });
       if (!user) {
         throw createHttpError(401, "User not found");
       }
 
       const { accessToken, refreshToken: newRefreshToken } = await generateTokens(user);
+
+       await Session.findOneAndUpdate({ userId: user._id }, { refreshToken: newRefreshToken });
 
       res.cookie("refreshToken", newRefreshToken, {
         httpOnly: true,

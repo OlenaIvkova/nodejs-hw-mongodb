@@ -1,25 +1,34 @@
 import express from "express";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
-import createHttpError from "http-errors";
-import User from "../models/user.js";
+// import bcrypt from "bcryptjs";
+// import jwt from "jsonwebtoken";
+// import createHttpError from "http-errors";
+// import User from "../models/user.js";
+import { register, login, refresh, logout } from "../controllers/authControllers.js";
 
 const router = express.Router();
 
-router.post("/login", async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+router.post("/signup", register);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw createHttpError(401, "Invalid credentials");
-    }
+router.post("/login", login);
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
-    res.json({ token });
-  } catch (error) {
-    next(error);
-  }
-});
+// router.post("/login", async (req, res, next) => {
+//   try {
+//     const { email, password } = req.body;
+//     const user = await User.findOne({ email });
+
+//     if (!user || !(await bcrypt.compare(password, user.password))) {
+//       throw createHttpError(401, "Invalid credentials");
+//     }
+
+//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+//     res.json({ token });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+router.get("/refresh", refresh);
+
+router.post("/logout", logout);
 
 export default router;
