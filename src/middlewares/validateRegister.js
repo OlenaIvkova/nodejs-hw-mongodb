@@ -1,29 +1,20 @@
-import { body, validationResult } from "express-validator";
-import createHttpError from "http-errors";
-import  User from "../models/user.js";
+import Joi from 'joi';
 
-export const validateRegister = [
-  body("name").notEmpty().withMessage("Name is required"),
-  body("email")
-    .isEmail()
-    .withMessage("Invalid email format")
-    .custom(async (email) => {
-      const user = await User.findOne({ email });
-      if (user) {
-        throw createHttpError(409, "Email in use");
-      }
-      return true;
-    }),
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 6 })
-    .withMessage("Password should be at least 6 characters long"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(createHttpError(400, "Validation failed", { errors: errors.array() }));
-    }
-    next();
-  },
-];
+const registerSchema = Joi.object({
+  name: Joi.string().min(3).required().messages({
+    'string.min': 'Name should have at least 3 characters',
+    'any.required': 'Name is required',
+  }),
+  email: Joi.string().email().required().messages({
+    'string.email': 'Invalid email format',
+    'any.required': 'Email is required',
+  }),
+  password: Joi.string().min(6).required().messages({
+    'string.min': 'Password should have at least 6 characters',
+    'any.required': 'Password is required',
+  }),
+});
+
+export const validateRegister = (data) => {
+  return registerSchema.validate(data);
+};

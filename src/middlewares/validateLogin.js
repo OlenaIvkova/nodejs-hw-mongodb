@@ -1,14 +1,17 @@
-import { body, validationResult } from "express-validator";
-import createHttpError from "http-errors";
+import Joi from 'joi';
 
-export const validateLogin = [
-  body("email").isEmail().withMessage("Invalid email format"),
-  body("password").notEmpty().withMessage("Password is required"),
-  (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return next(createHttpError(400, "Validation failed", { errors: errors.array() }));
-    }
-    next();
-  },
-];
+
+const loginSchema = Joi.object({
+  email: Joi.string().email().required().messages({
+    'string.email': 'Invalid email format',
+    'any.required': 'Email is required',
+  }),
+  password: Joi.string().min(6).required().messages({
+    'string.min': 'Password should have at least 6 characters',
+    'any.required': 'Password is required',
+  }),
+});
+
+export const validateLogin = (data) => {
+  return loginSchema.validate(data);
+};

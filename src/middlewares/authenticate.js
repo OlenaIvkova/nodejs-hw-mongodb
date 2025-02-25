@@ -1,27 +1,34 @@
-import jwt from "jsonwebtoken";
-import createHttpError from "http-errors";
-import User from "../models/user.js";
+import jwt from 'jsonwebtoken';
+import createHttpError from 'http-errors';
 
 const authenticate = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  console.log("Authorization Header:", authHeader);
+
+  if (!authHeader) {
+    return next(createHttpError(401, 'Authorization header is missing'));
+  }
+
+  const token = authHeader.split(' ')[1]; 
+  console.log("Extracted Token:", token);
+
+  if (!token) {
+    return next(createHttpError(401, 'Access token is missing'));
+  }
+
   try {
-    const { authorization } = req.headers;
-    if (!authorization || !authorization.startsWith("Bearer ")) {
-      throw createHttpError(401, "Unauthorized");
-    }
-
-    const token = authorization.split(" ")[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("Decoded JWT:", decoded);  
 
-    const user = await User.findOne({ _id: decoded.userId });
-
-    if (!user) {
-      throw createHttpError(401, "User not found");
+    if (decoded.exp && Date.now() >= decoded.exp * 1000) { 
+      return next(createHttpError(401, 'Access token expired'));
     }
 
-    req.user = user;
+    req.user = { _id: decoded.userId };
     next();
-  } catch {
-    next(createHttpError(401, "Invalid token"));
+  } catch (error) {
+     console.error(error);
+    next(createHttpError(401, 'Invalid or expired access token'));
   }
 };
 
