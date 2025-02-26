@@ -1,4 +1,5 @@
 import createHttpError from "http-errors";
+import bcrypt from "bcrypt";
 import { validateLogin } from "../middlewares/validateLogin.js";
 import { validateRegister } from "../middlewares/validateRegister.js";
 
