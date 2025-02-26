@@ -91,7 +91,7 @@ export const refreshSession = async (req, res, next) => {
 
 export const updateUser = async (req, res, next) => {
   try {
-    const { userId } = req.user; 
+    const { _id } = req.user; 
     const { name, email, password } = req.body;
 
     const updateData = {};
@@ -102,7 +102,7 @@ export const updateUser = async (req, res, next) => {
       updateData.password = hashedPassword;
     }
 
-    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+    const updatedUser = await User.findByIdAndUpdate(_id, updateData, { new: true });
 
     if (!updatedUser) {
       throw createHttpError(404, "User not found");
