@@ -122,6 +122,20 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({}, "-password"); 
+
+    res.status(200).json({
+      status: "200",
+      message: "Successfully fetched users!",
+      data: users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const logoutUser = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
