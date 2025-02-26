@@ -88,6 +88,39 @@ export const refreshSession = async (req, res, next) => {
   }
 };
 
+export const updateUser = async (req, res, next) => {
+  try {
+    const { userId } = req.user; 
+    const { name, email, password } = req.body;
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (email) updateData.email = email;
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateData.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateData, { new: true });
+
+    if (!updatedUser) {
+      throw createHttpError(404, "User not found");
+    }
+
+    res.status(200).json({
+      status: "200",
+      message: "User updated successfully",
+      data: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const logoutUser = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
