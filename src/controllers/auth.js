@@ -1,10 +1,10 @@
 import createHttpError from "http-errors";
 import { validateLogin } from "../middlewares/validateLogin.js";
 import { validateRegister } from "../middlewares/validateRegister.js";
-// import bcrypt from "bcrypt";
+
 import User from "../models/user.js";
 import { registerUser } from "../services/auth.js";
-// import jwt from "jsonwebtoken";
+
 import { loginUser } from "../services/auth.js";
 import { refreshUserSession } from "../services/auth.js";
 import { removeUserSession } from "../services/auth.js";
@@ -19,10 +19,6 @@ export const register = async (req, res, next) => {
       throw createHttpError(400, error.details[0].message);
     }
 
-    // if (!name || !email || !password) {
-    //   throw createHttpError(400, "All fields are required");
-    // }
-
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       throw createHttpError(409, "Email in use");
@@ -31,7 +27,7 @@ export const register = async (req, res, next) => {
     const newUser = await registerUser({ name, email, password });
 
     res.status(201).json({
-      status: "success",
+      status: "201",
       message: "Successfully registered a user!",
       data: {
         id: newUser._id,
@@ -53,10 +49,6 @@ export const login = async (req, res, next) => {
       throw createHttpError(400, error.details[0].message);
     }
 
-    // if (!email || !password) {
-    //   throw createHttpError(400, "All fields are required");
-    // }
-
     const { accessToken, refreshToken } = await loginUser(email, password);
 
     res.cookie("refreshToken", refreshToken, {
@@ -67,7 +59,7 @@ export const login = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "success",
+      status: "200",
       message: "Successfully logged in an user!",
       data: { accessToken },
     });
@@ -87,7 +79,7 @@ export const refreshSession = async (req, res, next) => {
     const newAccessToken = await refreshUserSession(refreshToken);
 
     res.status(200).json({
-      status: "success",
+      status: "200",
       message: "Successfully refreshed a session!",
       data: { accessToken: newAccessToken },
     });
@@ -106,7 +98,7 @@ export const logoutUser = async (req, res, next) => {
 
     await removeUserSession(refreshToken);
 
-    res.status(204).send(); // No Content
+    res.status(204).send(); 
   } catch (error) {
     next(error);
   }

@@ -14,6 +14,7 @@ export const registerUser = async ({ name, email, password }) => {
 
 export const loginUser = async (email, password) => {
   const user = await User.findOne({ email });
+  console.log("JWT_SECRET:", process.env.JWT_SECRET);
   if (!user) {
     throw createHttpError(401, "Invalid email or password");
   }
@@ -26,7 +27,7 @@ export const loginUser = async (email, password) => {
   const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
     expiresIn: "15m",
   });
-  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+  const refreshToken = jwt.sign({ userId: user._id }, process.env.JWT_REFRESH_SECRET, {
     expiresIn: "30d",
   });
 
