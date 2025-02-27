@@ -151,3 +151,21 @@ export const logoutUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { _id } = req.user; 
+
+    const deletedUser = await User.findByIdAndDelete(_id);
+    if (!deletedUser) {
+      throw createHttpError(404, "User not found");
+    }
+
+    res.status(200).json({
+      status: "200",
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
