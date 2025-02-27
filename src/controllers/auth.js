@@ -56,7 +56,7 @@ export const login = async (req, res, next) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 днів
+      maxAge: 30 * 24 * 60 * 60 * 1000, 
     });
 
     res.status(200).json({
