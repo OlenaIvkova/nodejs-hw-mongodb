@@ -44,7 +44,7 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    // const user = await User.findOne({ email });
+   
 
     const { error } = validateLogin(req.body);
     if (error) {

@@ -12,6 +12,8 @@ const router = express.Router();
 
 router.get("/", authenticate, ctrlWrapper(contactsController.getContacts));
 router.get("/:contactId", authenticate, isValidId, ctrlWrapper(contactsController.getContact));
+router.post("/contacts", authenticate, contactsController.createContact);
+
 router.post("/", authenticate, validateBody(contactSchema), ctrlWrapper(contactsController.createContact));
 router.patch("/:contactId", authenticate, isValidId, validateBody(contactSchema), ctrlWrapper(contactsController.updateContact));
 router.delete("/:contactId", authenticate, isValidId, ctrlWrapper(contactsController.deleteContact));
