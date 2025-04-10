@@ -28,7 +28,7 @@ export const register = async (req, res, next) => {
     const newUser = await registerUser({ name, email, password });
 
     res.status(201).json({
-      status: "201",
+      status: 201,
       message: "Successfully registered a user!",
       data: {
         id: newUser._id,
@@ -44,9 +44,14 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    // const user = await User.findOne({ email });
 
     const { error } = validateLogin(req.body);
+    if (error) {
+      throw createHttpError(400, error.details[0].message);
+    }
+
+     const user = await User.findOne({ email });
     if (!user) {
       throw createHttpError(400, "Invalid email or password");
     }
@@ -61,7 +66,7 @@ export const login = async (req, res, next) => {
     });
 
     res.status(200).json({
-      status: "200",
+      status: 200,
       message: "Successfully logged in an user!",
       data: { accessToken },
     });
@@ -81,7 +86,7 @@ export const refreshSession = async (req, res, next) => {
     const newAccessToken = await refreshUserSession(refreshToken);
 
     res.status(200).json({
-      status: "200",
+      status: 200,
       message: "Successfully refreshed a session!",
       data: { accessToken: newAccessToken },
     });
@@ -110,7 +115,7 @@ export const updateUser = async (req, res, next) => {
     }
 
     res.status(200).json({
-      status: "200",
+      status: 200,
       message: "User updated successfully",
       data: {
         id: updatedUser._id,
@@ -128,7 +133,7 @@ export const getAllUsers = async (req, res, next) => {
     const users = await User.find({}, "-password"); 
 
     res.status(200).json({
-      status: "200",
+      status: 200,
       message: "Successfully fetched users!",
       data: users,
     });
@@ -163,7 +168,7 @@ export const deleteUser = async (req, res, next) => {
     }
 
     res.status(200).json({
-      status: "200",
+      status: 200,
       message: "User deleted successfully",
     });
   } catch (error) {

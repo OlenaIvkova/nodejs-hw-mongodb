@@ -1,35 +1,58 @@
-import jwt from 'jsonwebtoken';
-import createHttpError from 'http-errors';
+import createHttpError from "http-errors";
+import jwt from "jsonwebtoken";
 
-const authenticate = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  console.log("Authorization Header:", authHeader);
-
-  if (!authHeader) {
-    return next(createHttpError(401, 'Authorization header is missing'));
-  }
-
-  const token = authHeader.split(' ')[1]; 
-  console.log("Extracted Token:", token);
+const authenticate = (req, res, next) => {
+  const token = req.cookies.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    return next(createHttpError(401, 'Access token is missing'));
+    throw createHttpError(401, "Unauthorized: No token provided");
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded JWT:", decoded);  
-
-    if (decoded.exp && Date.now() >= decoded.exp * 1000) { 
-      return next(createHttpError(401, 'Access token expired'));
-    }
-
-    req.user = { _id: decoded.userId };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    req.user = decoded;
     next();
   } catch (error) {
-     console.error(error);
-    next(createHttpError(401, 'Invalid or expired access token'));
+    console.error(error);
+    throw createHttpError(401, "Unauthorized: Invalid token");
   }
 };
 
 export default authenticate;
+
+
+// import jwt from 'jsonwebtoken';
+// import createHttpError from 'http-errors';
+
+// const authenticate = async (req, res, next) => {
+//   const authHeader = req.headers.authorization;
+//   console.log("Authorization Header:", authHeader);
+
+//   if (!authHeader) {
+//     return next(createHttpError(401, 'Authorization header is missing'));
+//   }
+
+//   const token = authHeader.split(' ')[1]; 
+//   console.log("Extracted Token:", token);
+
+//   if (!token) {
+//     return next(createHttpError(401, 'Access token is missing'));
+//   }
+
+//   try {
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//     console.log("Decoded JWT:", decoded);  
+
+//     if (decoded.exp && Date.now() >= decoded.exp * 1000) { 
+//       return next(createHttpError(401, 'Access token expired'));
+//     }
+
+//     req.user = { _id: decoded.userId };
+//     next();
+//   } catch (error) {
+//      console.error(error);
+//     next(createHttpError(401, 'Invalid or expired access token'));
+//   }
+// };
+
+// export default authenticate;

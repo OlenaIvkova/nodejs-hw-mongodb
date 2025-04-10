@@ -1,5 +1,5 @@
 import Contact from "../db/contactModel.js";
-// import createHttpError from "http-errors";
+
 
 const getAllContacts = async () => {
   const contacts = await Contact.find();
