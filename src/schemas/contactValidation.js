@@ -5,7 +5,7 @@ const contactSchema = Joi.object({
   phoneNumber: Joi.string().pattern(/^\d+$/).required(),
   email: Joi.string().email().required(),
   isFavourite: Joi.boolean(),
-  contactType: Joi.string().valid('work', 'home', 'personal').default('personal').required(),
+  contactType: Joi.string().valid('work', 'home', 'personal', 'business').default('personal').required(),
 });
 
 const registerSchema = Joi.object({

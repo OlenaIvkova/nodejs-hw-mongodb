@@ -2,7 +2,8 @@ import createHttpError from "http-errors";
 import jwt from "jsonwebtoken";
 
 const authenticate = (req, res, next) => {
-  const token = req.cookies.accessToken || req.header("Authorization")?.replace("Bearer ", "");
+  const token = req.header("Authorization")?.replace("Bearer ", "") || req.cookies.accessToken;
+  console.log("Token received:", token);
 
   if (!token) {
     throw createHttpError(401, "Unauthorized: No token provided");
@@ -10,6 +11,7 @@ const authenticate = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+     console.log("Decoded token:", decoded);
     req.user = decoded;
     next();
   } catch (error) {
