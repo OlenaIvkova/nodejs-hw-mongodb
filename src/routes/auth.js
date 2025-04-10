@@ -1,8 +1,8 @@
 import express from "express";
 import { register, login, refreshSession, logoutUser, deleteUser } from "../controllers/auth.js";
 import authenticate from "../middlewares/authenticate.js";
-const validateBody = require("../../middlewares/validateBody");
-const { registerSchema, loginSchema } = require("../../schemas/usersSchemas");
+import validateBody from "../middlewares/validateBody.js";
+import { registerSchema, loginSchema } from "../schemas/contactValidation.js"; 
 
 const router = express.Router();
 
