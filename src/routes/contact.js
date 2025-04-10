@@ -2,9 +2,11 @@ import express from 'express';
 import contactsController from '../controllers/contactsController.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../middlewares/validateBody.js';
-import contactSchema from '../schemas/contactValidation.js';  
+// import contactSchema from '../schemas/contactValidation.js';  
 import isValidId from '../middlewares/isValidId.js';
 import authenticate from "../middlewares/authenticate.js";
+import validationSchemas from '../schemas/contactValidation.js';
+const { contactSchema } = validationSchemas;
 
 const router = express.Router();
 
