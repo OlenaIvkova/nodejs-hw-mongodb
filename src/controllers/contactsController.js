@@ -92,33 +92,6 @@ const createContact = async (req, res, next) => {
   }
 };
 
-// const createContact = async (req, res, next) => {
-//   try {
-//     const { name, email, phoneNumber, contactType } = req.body;
-//     if (!req.user || !req.user._id) {
-//       throw createHttpError(401, "User is not authenticated");
-//     }
-
-//     const newContact = new Contact({
-//       name,
-//       email,
-//       phoneNumber,
-//       contactType,
-//       userId: req.user._id,
-//     });
-
-//     await newContact.save();
-
-//     res.status(201).json({
-//       status: 201,
-//       message: "Contact successfully created",
-//       data: newContact,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
