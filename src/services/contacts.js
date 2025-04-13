@@ -1,6 +1,5 @@
 import Contact from "../db/contactModel.js";
 
-
 const getAllContacts = async () => {
   const contacts = await Contact.find();
   console.log("Fetched contacts from DB:", contacts);

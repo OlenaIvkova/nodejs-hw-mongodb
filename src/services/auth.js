@@ -4,7 +4,6 @@ import createHttpError from "http-errors";
 import User from "../models/user.js";
 import Session from "../models/session.js";
 
-
 export const registerUser = async ({ name, email, password }) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = new User({ name, email, password: hashedPassword });

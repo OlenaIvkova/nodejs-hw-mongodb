@@ -4,7 +4,7 @@ const contactSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     phoneNumber: { type: String, required: true },
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: false },
     // password: { type: String, required: true },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,7 +12,7 @@ const contactSchema = new mongoose.Schema(
       required: true,
     },
     isFavourite: { type: Boolean, default: false },
-    contactType: { type: String, required: false, default: "personal" },
+    contactType: { type: String, enum: ["personal", "work", "home", "business"], default: "personal" },
   },
   { timestamps: true }
 );
