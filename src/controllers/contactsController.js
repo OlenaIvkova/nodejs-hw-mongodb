@@ -1,4 +1,4 @@
-import Joi from "joi";
+// import Joi from "joi";
 import createHttpError from 'http-errors';
 import Contact from "../db/contactModel.js";
 
@@ -48,35 +48,16 @@ const getContact = async (req, res, next) => {
   }
 };
 
-const validateContact = (data) => {
-  const schema = Joi.object({
-    name: Joi.string().min(3).required(),
-    email: Joi.string().email().required(),
-    phoneNumber: Joi.string().min(10).required(),
-    contactType: Joi.string().valid("personal", "business").required(),
-  });
-  
-  return schema.validate(data);
-};
-
-const createContact = async (req, res, next) => {
+    const createContact = async (req, res, next) => {
   try {
-    const { name, email, phoneNumber, contactType } = req.body;
-
-    const { error } = validateContact(req.body);
-    if (error) {
-      throw createHttpError(400, error.details[0].message);
-    }
-
-    if (!req.user || !req.user._id) {
-      throw createHttpError(401, "User is not authenticated");
-    }
+    const { name, email, phoneNumber, contactType, isFavourite } = req.body;
 
     const newContact = new Contact({
       name,
       email,
       phoneNumber,
       contactType,
+      isFavourite,
       userId: req.user._id,
     });
 
@@ -91,6 +72,7 @@ const createContact = async (req, res, next) => {
     next(error);
   }
 };
+
 
 const updateContact = async (req, res, next) => {
   try {
