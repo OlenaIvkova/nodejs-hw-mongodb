@@ -204,6 +204,7 @@ export const sendResetEmailController = async (req, res, next) => {
     });
   } catch (error) {
     console.error(error.message);
+    console.error("Email sending error:", error);
     next(createHttpError(500, "Failed to send the email, please try again later."));
   }
 };
