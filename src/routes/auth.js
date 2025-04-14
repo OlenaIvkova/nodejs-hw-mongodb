@@ -3,6 +3,8 @@ import { register, login, refreshSession, logoutUser, deleteUser } from "../cont
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../middlewares/validateBody.js";
 import validationSchemas from "../schemas/contactValidation.js";
+import ctrlWrapper from "../utils/ctrlWrapper.js";
+import { sendResetEmailController, resetPassword } from "../controllers/auth.js";
 
 const { registerSchema, loginSchema } = validationSchemas; 
 
@@ -15,5 +17,7 @@ router.post("/refresh", refreshSession);
 // router.patch("/users/update", authenticate, updateUser);
 router.post("/logout", logoutUser);
 router.delete("/delete", authenticate, deleteUser);
+router.post("/send-reset-email", ctrlWrapper(sendResetEmailController));
+router.post("/reset-pwd", ctrlWrapper(resetPassword));
 
 export default router;

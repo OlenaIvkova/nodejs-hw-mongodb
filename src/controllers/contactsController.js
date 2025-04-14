@@ -50,6 +50,7 @@ const getContact = async (req, res, next) => {
     const createContact = async (req, res, next) => {
   try {
     const { name, email, phoneNumber, contactType, isFavourite } = req.body;
+    const photoUrl = req.file?.path || "";
 
     const newContact = new Contact({
       name,
@@ -58,6 +59,7 @@ const getContact = async (req, res, next) => {
       contactType,
       isFavourite,
       userId: req.user._id,
+      photo: photoUrl,
     });
 
     await newContact.save();
@@ -72,27 +74,54 @@ const getContact = async (req, res, next) => {
   }
 };
 
-
 const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
+    const updateData = { ...req.body };
+    if (req.file?.path) {
+      updateData.photo = req.file.path;
+    }
+
     const contact = await Contact.findOneAndUpdate(
       { _id: contactId, userId: req.user._id },
-      req.body,
+      updateData,
       { new: true }
     );
+
     if (!contact) {
-      throw createHttpError(404, 'Contact not found');
+      throw createHttpError(404, "Contact not found");
     }
+
     res.json({
       status: 200,
-      message: 'Contact successfully updated',
+      message: "Contact successfully updated",
       data: contact,
     });
   } catch (error) {
     next(error);
   }
 };
+
+// const updateContact = async (req, res, next) => {
+//   try {
+//     const { contactId } = req.params;
+//     const contact = await Contact.findOneAndUpdate(
+//       { _id: contactId, userId: req.user._id },
+//       req.body,
+//       { new: true }
+//     );
+//     if (!contact) {
+//       throw createHttpError(404, 'Contact not found');
+//     }
+//     res.json({
+//       status: 200,
+//       message: 'Contact successfully updated',
+//       data: contact,
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 const deleteContact = async (req, res, next) => {
   try {

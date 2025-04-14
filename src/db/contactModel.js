@@ -12,6 +12,7 @@ const contactSchema = new mongoose.Schema(
     },
     isFavourite: { type: Boolean, default: false },
     contactType: { type: String, enum: ["personal", "work", "home", "business"], default: "personal" },
+    photo: { type: String, default: "" }
   },
   { timestamps: true }
 );
