@@ -18,6 +18,6 @@ router.post("/refresh", refreshSession);
 router.post("/logout", logoutUser);
 router.delete("/delete", authenticate, deleteUser);
 router.post("/send-reset-email", ctrlWrapper(sendResetEmailController));
-router.post("/reset-pwd", ctrlWrapper(resetPassword));
+router.post("/reset-password", ctrlWrapper(resetPassword));
 
 export default router;

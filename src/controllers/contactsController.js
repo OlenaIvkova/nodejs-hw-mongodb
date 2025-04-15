@@ -136,4 +136,34 @@ const deleteContact = async (req, res, next) => {
   }
 };
 
-export default { getContacts, getContact, createContact, updateContact, deleteContact };
+const uploadContactPhoto = async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const userId = req.user._id;
+    const photoUrl = req.file?.path;
+
+    if (!photoUrl) {
+      return res.status(400).json({ message: "No photo uploaded" });
+    }
+
+    const contact = await Contact.findOneAndUpdate(
+      { _id: contactId, userId },
+      { photo: photoUrl },
+      { new: true }
+    );
+
+    if (!contact) {
+      throw createHttpError(404, "Contact not found");
+    }
+
+    res.json({
+      status: 200,
+      message: "Photo successfully uploaded",
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export default { getContacts, getContact, createContact, updateContact, deleteContact, uploadContactPhoto };

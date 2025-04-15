@@ -15,6 +15,7 @@ import { removeUserSession } from "../services/auth.js";
 
 import { sendResetEmail } from "../services/email.js";
 import validationSchemas from "../schemas/contactValidation.js";
+import { getEnvVar } from "../helpers/getEnvVar.js";
 
 const { emailSchema, resetPasswordSchema } = validationSchemas;
 
@@ -52,7 +53,6 @@ export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
    
-
     const { error } = validateLogin(req.body);
     if (error) {
       throw createHttpError(400, error.details[0].message);
@@ -158,6 +158,7 @@ export const logoutUser = async (req, res, next) => {
     }
 
     await removeUserSession(refreshToken);
+    res.clearCookie("refreshToken");
 
     res.status(204).send(); 
   } catch (error) {
@@ -193,13 +194,29 @@ export const sendResetEmailController = async (req, res, next) => {
     const user = await User.findOne({ email });
     if (!user) throw createHttpError(404, "User not found!");
 
-    const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
+    const resetToken = jwt.sign(
+      { sub: user._id, email },
+      getEnvVar("JWT_SECRET"),
+      { expiresIn: "15m" }
+    );
 
-    await sendResetEmail(email, token);
+    const resetUrl = `${getEnvVar("APP_DOMAIN")}/reset-password?token=${resetToken}`;
+
+    const mailOptions = {
+      from: getEnvVar("SMTP_FROM"),
+      to: email,
+      subject: "Reset your password",
+      html: `<p>Click the link to reset your password:</p><a href="${resetUrl}">${resetUrl}</a>`,
+    };
+
+    await sendResetEmail(mailOptions);
+
+    // const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
+    // await sendResetEmail(email, token);
 
     res.status(200).json({
       status: 200,
-      message: "Reset password email has been successfully sent.",
+      message: "Reset email has been successfully sent.",
       data: {},
     });
   } catch (error) {
@@ -216,13 +233,16 @@ export const resetPassword = async (req, res, next) => {
     const { error } = resetPasswordSchema.validate({ token, password }); 
     if (error) throw createHttpError(400, error.details[0].message);
 
-    let email;
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      email = decoded.email;
-    } catch {
-      throw createHttpError(401, "Token is expired or invalid.");
-    }
+    const decoded = jwt.verify(token, getEnvVar("JWT_SECRET"));
+    const { email } = decoded;
+
+    // let email;
+    // try {
+    //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    //   email = decoded.email;
+    // } catch {
+    //   throw createHttpError(401, "Token is expired or invalid.");
+    // }
 
     const user = await User.findOne({ email });
     if (!user) throw createHttpError(404, "User not found!");
@@ -238,6 +258,9 @@ export const resetPassword = async (req, res, next) => {
       data: {},
     });
   } catch (error) {
+    if (error.name === "TokenExpiredError" || error.name === "JsonWebTokenError") {
+      return next(createHttpError(401, "Token is expired or invalid"));
+    }
     next(error);
   }
 };
