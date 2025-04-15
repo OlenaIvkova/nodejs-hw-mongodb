@@ -1,5 +1,6 @@
 import createHttpError from 'http-errors';
 import Contact from "../db/contactModel.js";
+import cloudinaryService from '../services/cloudinary.js';
 
 const getContacts = async (req, res, next) => {
   try {
@@ -50,7 +51,11 @@ const getContact = async (req, res, next) => {
     const createContact = async (req, res, next) => {
   try {
     const { name, email, phoneNumber, contactType, isFavourite } = req.body;
-    const photoUrl = req.file?.path || "";
+    let photoUrl = "";
+
+    if (req.file?.path) {
+      photoUrl = await cloudinaryService.uploadImage(req.file.path);
+    }
 
     const newContact = new Contact({
       name,
@@ -78,8 +83,9 @@ const updateContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const updateData = { ...req.body };
+
     if (req.file?.path) {
-      updateData.photo = req.file.path;
+       updateData.photo = await cloudinaryService.uploadImage(req.file.path);
     }
 
     const contact = await Contact.findOneAndUpdate(
@@ -120,11 +126,12 @@ const uploadContactPhoto = async (req, res, next) => {
     console.log("Uploaded file:", req.file);
     const { contactId } = req.params;
     const userId = req.user._id;
-    const photoUrl = req.file?.path;
 
-    if (!photoUrl) {
+    if (!req.file?.path) {
       return res.status(400).json({ message: "No photo uploaded" });
     }
+
+    const photoUrl = await cloudinaryService.uploadImage(req.file.path);
 
     const contact = await Contact.findOneAndUpdate(
       { _id: contactId, userId },
