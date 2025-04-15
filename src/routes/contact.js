@@ -26,19 +26,27 @@ router.post(
 "/",
 upload.single("photo"),
 validateBody(contactSchema),
-ctrlWrapper(contactsController.createContact));
+    ctrlWrapper(contactsController.createContact));
 
 router.patch(
-    "/:contactId",
-    isValidId,
-    validateBody(updateContactSchema),
-    ctrlWrapper(contactsController.updateContact));
+"/:contactId",
+isValidId,
+upload.single("photo"), 
+validateBody(updateContactSchema),
+ctrlWrapper(contactsController.updateContact) 
+);
 
-router.patch(
-    "/:contactId/photo",
-    isValidId,
-    upload.single("photo"),
-    ctrlWrapper(contactsController.uploadContactPhoto));
+// router.patch(
+//     "/:contactId",
+//     isValidId,
+//     validateBody(updateContactSchema),
+//     ctrlWrapper(contactsController.updateContact));
+
+// router.patch(
+//     "/:contactId/photo",
+//     isValidId,
+//     upload.single("photo"),
+//     ctrlWrapper(contactsController.uploadContactPhoto));
 
 router.delete(
     "/:contactId",
