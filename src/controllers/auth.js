@@ -211,9 +211,6 @@ export const sendResetEmailController = async (req, res, next) => {
 
     await sendResetEmail(mailOptions);
 
-    // const token = jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "5m" });
-    // await sendResetEmail(email, token);
-
     res.status(200).json({
       status: 200,
       message: "Reset email has been successfully sent.",
@@ -235,14 +232,6 @@ export const resetPassword = async (req, res, next) => {
 
     const decoded = jwt.verify(token, getEnvVar("JWT_SECRET"));
     const { email } = decoded;
-
-    // let email;
-    // try {
-    //   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    //   email = decoded.email;
-    // } catch {
-    //   throw createHttpError(401, "Token is expired or invalid.");
-    // }
 
     const user = await User.findOne({ email });
     if (!user) throw createHttpError(404, "User not found!");
