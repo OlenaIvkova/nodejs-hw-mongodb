@@ -102,27 +102,6 @@ const updateContact = async (req, res, next) => {
   }
 };
 
-// const updateContact = async (req, res, next) => {
-//   try {
-//     const { contactId } = req.params;
-//     const contact = await Contact.findOneAndUpdate(
-//       { _id: contactId, userId: req.user._id },
-//       req.body,
-//       { new: true }
-//     );
-//     if (!contact) {
-//       throw createHttpError(404, 'Contact not found');
-//     }
-//     res.json({
-//       status: 200,
-//       message: 'Contact successfully updated',
-//       data: contact,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 const deleteContact = async (req, res, next) => {
   try {
     const { contactId } = req.params;
@@ -138,6 +117,7 @@ const deleteContact = async (req, res, next) => {
 
 const uploadContactPhoto = async (req, res, next) => {
   try {
+    console.log("Uploaded file:", req.file);
     const { contactId } = req.params;
     const userId = req.user._id;
     const photoUrl = req.file?.path;
