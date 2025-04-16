@@ -24,6 +24,8 @@ const setupServer = () => {
   const PORT = process.env.PORT || 3001;
 
   app.use('/uploads', express.static(UPLOAD_DIR));
+  const DOCS_DIR = path.join(__dirname, 'docs');
+  app.use('/docs', express.static(DOCS_DIR));
   app.use('/api-docs', swaggerDocs());
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
