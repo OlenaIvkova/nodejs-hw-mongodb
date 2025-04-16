@@ -11,7 +11,7 @@ import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
-import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import { swaggerServe, swaggerDocs } from './middlewares/swaggerDocs.js';
 import path from "node:path";
 import { fileURLToPath } from "url";
 
@@ -26,7 +26,7 @@ const setupServer = () => {
   app.use('/uploads', express.static(UPLOAD_DIR));
   const DOCS_DIR = path.join(__dirname, 'docs');
   app.use('/docs', express.static(DOCS_DIR));
-  app.use('/api-docs', swaggerDocs());
+  app.use('/api-docs', swaggerServe, swaggerDocs);
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(cors());
