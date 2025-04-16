@@ -11,6 +11,7 @@ info:
 
 servers:
   - url: http://localhost:3001
+  - url: https://nodejs-hw-mongodb-jwe2.onrender.com
   - url: https://your-deployed-api.com
 
 tags:
