@@ -11,9 +11,21 @@ import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
+import YAML from "yamljs";
+import swaggerUi from "swagger-ui-express";
+
 const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
+
+  let swaggerDocument;
+  try {
+    swaggerDocument = YAML.load("./docs/openapi.yaml");
+  } catch (err) {
+    console.error("❌ Failed to load Swagger YAML:", err.message || err);
+    process.exit(1);
+  }
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(cors());

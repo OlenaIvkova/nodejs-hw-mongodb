@@ -1,0 +1,30 @@
+patch:
+  tags:
+    - Upload
+  summary: Завантажити або оновити фото для контакта
+  security:
+    - bearerAuth: []
+  parameters:
+    - in: path
+      name: contactId
+      required: true
+      schema:
+        type: string
+      description: ID контакта
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          properties:
+            photo:
+              type: string
+              format: binary
+  responses:
+    '200':
+      description: Фото завантажено
+    '400':
+      description: Помилка завантаження або неправильний формат
+    '404':
+      description: Контакт не знайдено

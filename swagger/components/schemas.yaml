@@ -1,0 +1,45 @@
+components:
+  schemas:
+    Contact:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "661bc8c5d9ec48ce7b5ec281"
+        name:
+          type: string
+          example: "Іван Іванов"
+        email:
+          type: string
+          example: "ivan@example.com"
+        phone:
+          type: string
+          example: "+380971234567"
+        photo:
+          type: string
+          format: uri
+          example: "https://res.cloudinary.com/yourcloud/image/upload/v1681234567/contact-photo.jpg"
+        owner:
+          type: string
+          example: "660f0a6f918d8e001f5b4abc"
+        createdAt:
+          type: string
+          format: date-time
+          example: "2024-04-01T12:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          example: "2024-04-10T15:30:00Z"
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "error"
+        code:
+          type: integer
+          example: 404
+        message:
+          type: string
+          example: "Контакт не знайдено"
