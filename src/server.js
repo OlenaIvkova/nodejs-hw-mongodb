@@ -11,21 +11,20 @@ import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
-import YAML from "yamljs";
-import swaggerUi from "swagger-ui-express";
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
+import path from "node:path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
 
 const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
-  let swaggerDocument;
-  try {
-    swaggerDocument = YAML.load("./docs/openapi.yaml");
-  } catch (err) {
-    console.error("❌ Failed to load Swagger YAML:", err.message || err);
-    process.exit(1);
-  }
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(cors());
