@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.3",
   "info": {
     "version": "1.0.0",
     "title": "Contact Manager API",
@@ -7,43 +7,29 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "Бекенд-додаток для управління контактами користувача з аутентифікацією,  авторизацією та завантаженням фото.\n"
+    "description": "Бекенд-додаток для управління контактами користувача з аутентифікацією, авторизацією та завантаженням фото."
   },
   "servers": [
-    {
-      "url": "http://localhost:3001"
-    },
-    {
-      "url": "https://nodejs-hw-mongodb-jwe2.onrender.com"
-    }
+    { "url": "http://localhost:3001" },
+    { "url": "https://nodejs-hw-mongodb-jwe2.onrender.com" }
   ],
   "tags": [
-    {
-      "name": "Auth",
-      "description": "Реєстрація, вхід, вихід, оновлення сесії"
-    },
-    {
-      "name": "User",
-      "description": "Отримання поточного користувача"
-    },
-    {
-      "name": "Contacts",
-      "description": "CRUD операції з контактами користувача"
-    },
-    {
-      "name": "Upload",
-      "description": "Завантаження або оновлення фото для контакта"
-    }
+    { "name": "Auth", "description": "Реєстрація, вхід, вихід, оновлення сесії" },
+    { "name": "User", "description": "Отримання поточного користувача" },
+    { "name": "Contacts", "description": "CRUD операції з контактами користувача" },
+    { "name": "Upload", "description": "Завантаження або оновлення фото для контакта" }
+  ],
+  "security": [
+    { "bearerAuth": [] }
   ],
   "paths": {
     "/api/auth/register": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Реєстрація нового користувача",
+        "description": "Цей ендпоінт дозволяє зареєструвати нового користувача.",
         "operationId": "registerUser",
-        "description": "Цей ендпоінт дозволяє зареєструвати нового користувача, надаючи електронну адресу та пароль.\n",
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
@@ -51,35 +37,27 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
               }
             }
           }
         },
         "responses": {
-          "201": {
-            "description": "Користувача зареєстровано"
-          },
-          "400": {
-            "description": "Невірні дані"
-          }
+          "201": { "description": "Користувача зареєстровано" },
+          "400": { "description": "Невірні дані" }
         }
       }
     },
     "/api/auth/login": {
       "post": {
-        "tags": [
-          "Auth"
-        ],
+        "tags": ["Auth"],
         "summary": "Логін користувача",
+        "description": "Користувач входить в систему за email і паролем.",
         "operationId": "loginUser",
-        "description": "Цей ендпоінт дозволяє користувачеві увійти в систему, використовуючи електронну адресу та пароль.\n",
+        "security": [],
         "requestBody": {
           "required": true,
           "content": {
@@ -87,13 +65,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
-                    "type": "string"
-                  },
-                  "password": {
-                    "type": "string"
-                  }
-                }
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
               }
             }
           }
@@ -106,335 +81,193 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "accessToken": {
-                      "type": "string"
-                    },
-                    "refreshToken": {
-                      "type": "string"
-                    }
+                    "accessToken": { "type": "string" },
+                    "refreshToken": { "type": "string" }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Невірні дані"
-          },
-          "401": {
-            "description": "Невірний логін або пароль"
-          }
+          "400": { "description": "Невірні дані" },
+          "401": { "description": "Невірний логін або пароль" }
         }
       }
     },
     "/api/contacts": {
       "get": {
-        "get": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Отримати всі контакти",
-          "operationId": "getContacts",
-          "description": "Цей ендпоінт повертає список усіх контактів користувача.  Параметри запиту дозволяють здійснювати пагінацію та сортування.\n",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "in": "query",
-              "name": "page",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "default": 1
-              },
-              "description": "Номер сторінки для пагінації"
-            },
-            {
-              "in": "query",
-              "name": "limit",
-              "required": false,
-              "schema": {
-                "type": "integer",
-                "default": 10
-              },
-              "description": "Кількість елементів на сторінці"
-            },
-            {
-              "in": "query",
-              "name": "sortBy",
-              "required": false,
-              "schema": {
-                "type": "string"
-              },
-              "description": "Поле для сортування"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Список контактів",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "../components/schemas.yaml#/Contact"
-                    }
-                  }
+        "tags": ["Contacts"],
+        "summary": "Отримати всі контакти",
+        "operationId": "getAllContacts",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": { "type": "integer", "default": 1 },
+            "description": "Номер сторінки"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": { "type": "integer", "default": 10 },
+            "description": "Кількість елементів"
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": { "type": "string" },
+            "description": "Поле для сортування"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список контактів",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Contact" }
                 }
               }
-            },
-            "401": {
-              "description": "Користувач не авторизований"
             }
-          }
+          },
+          "401": { "description": "Користувач не авторизований" }
         }
       },
       "post": {
-        "post": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Створити новий контакт",
-          "operationId": "createContact",
-          "description": "Цей ендпоінт дозволяє створити новий контакт для користувача. Потрібно вказати всі необхідні дані.\n",
-          "security": [
-            {
-              "bearerAuth": []
+        "tags": ["Contacts"],
+        "summary": "Створити новий контакт",
+        "operationId": "createContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Contact" }
             }
-          ],
-          "requestBody": {
-            "required": true,
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Контакт створено",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string"
-                    },
-                    "phone": {
-                      "type": "string"
-                    }
-                  }
-                }
+                "schema": { "$ref": "#/components/schemas/Contact" }
               }
             }
           },
-          "responses": {
-            "201": {
-              "description": "Контакт створено",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "../components/schemas.yaml#/Contact"
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Помилка валідації"
-            }
-          }
-        }
-      },
-      "patch": {
-        "patch": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Оновити контакт",
-          "operationId": "updateContact",
-          "description": "Цей ендпоінт дозволяє оновити контакт за його ID. Потрібно вказати ID та нові дані контакту.\n",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "contactId",
-              "required": true,
-              "schema": {
-                "type": "string"
-              },
-              "description": "ID контакту"
-            }
-          ],
-          "requestBody": {
-            "required": true,
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string"
-                    },
-                    "email": {
-                      "type": "string"
-                    },
-                    "phone": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "responses": {
-            "200": {
-              "description": "Контакт оновлено",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "../components/schemas.yaml#/Contact"
-                  }
-                }
-              }
-            },
-            "400": {
-              "description": "Невірні дані"
-            },
-            "404": {
-              "description": "Контакт не знайдений"
-            }
-          }
-        }
-      },
-      "delete": {
-        "delete": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Видалити контакт",
-          "operationId": "deleteContact",
-          "description": "Цей ендпоінт дозволяє видалити контакт за його ID.\n",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "contactId",
-              "required": true,
-              "schema": {
-                "type": "string"
-              },
-              "description": "ID контакту"
-            }
-          ],
-          "responses": {
-            "204": {
-              "description": "Контакт видалено"
-            },
-            "404": {
-              "description": "Контакт не знайдений"
-            }
-          }
+          "400": { "description": "Помилка валідації" }
         }
       }
     },
     "/api/contacts/{contactId}": {
       "get": {
-        "get": {
-          "tags": [
-            "Contacts"
-          ],
-          "summary": "Отримати контакт за ID",
-          "operationId": "getContactById",
-          "description": "Цей ендпоінт дозволяє отримати інформацію про контакт за його ID. Використовується авторизація за допомогою Bearer токену.\n",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "contactId",
-              "required": true,
-              "schema": {
-                "type": "string"
-              },
-              "description": "ID контакту"
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Контакт знайдений",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "../components/schemas.yaml#/Contact"
-                  }
-                }
+        "tags": ["Contacts"],
+        "summary": "Отримати контакт за ID",
+        "operationId": "getContactById",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactId",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Контакт знайдений",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Contact" }
               }
-            },
-            "404": {
-              "description": "Контакт не знайдений"
+            }
+          },
+          "404": { "description": "Контакт не знайдений" }
+        }
+      },
+      "patch": {
+        "tags": ["Contacts"],
+        "summary": "Оновити контакт",
+        "operationId": "updateContact",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactId",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/Contact" }
             }
           }
+        },
+        "responses": {
+          "200": {
+            "description": "Контакт оновлено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Contact" }
+              }
+            }
+          },
+          "400": { "description": "Невірні дані" },
+          "404": { "description": "Контакт не знайдений" }
+        }
+      },
+      "delete": {
+        "tags": ["Contacts"],
+        "summary": "Видалити контакт",
+        "operationId": "deleteContact",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactId",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Контакт видалено" },
+          "404": { "description": "Контакт не знайдений" }
         }
       }
     },
     "/api/contacts/{contactId}/photo": {
       "patch": {
-        "patch": {
-          "tags": [
-            "Upload"
-          ],
-          "summary": "Завантажити або оновити фото для контакта",
-          "security": [
-            {
-              "bearerAuth": []
-            }
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "contactId",
-              "required": true,
-              "schema": {
-                "type": "string"
-              },
-              "description": "ID контакта"
-            }
-          ],
-          "requestBody": {
+        "tags": ["Upload"],
+        "summary": "Завантажити або оновити фото для контакта",
+        "operationId": "uploadContactPhoto",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "contactId",
             "required": true,
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "photo": {
-                      "type": "string",
-                      "format": "binary"
-                    }
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
                   }
-                }
+                },
+                "required": ["photo"]
               }
             }
-          },
-          "responses": {
-            "200": {
-              "description": "Фото завантажено"
-            },
-            "400": {
-              "description": "Помилка завантаження або неправильний формат"
-            },
-            "404": {
-              "description": "Контакт не знайдено"
-            }
           }
+        },
+        "responses": {
+          "200": { "description": "Фото завантажено" },
+          "400": { "description": "Помилка завантаження або неправильний формат" },
+          "404": { "description": "Контакт не знайдено" }
         }
       }
     }
@@ -445,6 +278,18 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "photo": { "type": "string", "nullable": true }
+        },
+        "required": ["name", "email", "phone"]
       }
     }
   }

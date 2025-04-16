@@ -1,23 +1,23 @@
-post:
-  tags:
-    - Auth
-  summary: Реєстрація нового користувача
-  operationId: registerUser
-  description: >
-    Цей ендпоінт дозволяє зареєструвати нового користувача, надаючи електронну адресу та пароль.
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            email:
-              type: string
-            password:
-              type: string
-  responses:
-    '201':
-      description: Користувача зареєстровано
-    '400':
-      description: Невірні дані
+tags:
+  - Auth
+summary: Реєстрація нового користувача
+operationId: registerUser
+description: >
+  Цей ендпоінт дозволяє зареєструвати нового користувача, надаючи електронну адресу та пароль.
+security: []  
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+          password:
+            type: string
+responses:
+  '201':
+    description: Користувача зареєстровано
+  '400':
+    description: Невірні дані

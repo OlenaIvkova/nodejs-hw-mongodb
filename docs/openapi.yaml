@@ -1,4 +1,4 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
   version: 1.0.0
   title: Contact Manager API
@@ -25,7 +25,8 @@ tags:
 
 paths:
   /api/auth/register:
-    $ref: "../swagger/paths/auth/register.yaml"
+    get:
+      $ref: "../swagger/paths/auth/register.yaml"
 
   /api/auth/login:
     $ref: "../swagger/paths/auth/login.yaml"
