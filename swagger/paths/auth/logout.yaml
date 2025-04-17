@@ -1,17 +1,16 @@
-post:
-  tags:
-    - Auth
-  summary: User logout
-  operationId: logoutUser
-  description: Logs out the currently authenticated user by invalidating tokens.
-  security:
-    - bearerAuth: []
-  responses:
-    '204':
-      description: Successfully logged out
-    '401':
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+tags:
+  - Auth
+summary: User logout
+operationId: logoutUser
+description: Logs out the currently authenticated user by invalidating tokens.
+security:
+  - bearerAuth: []
+responses:
+  '204':
+    description: Successfully logged out
+  '401':
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas.yaml#/ErrorResponse'

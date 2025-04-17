@@ -38,6 +38,51 @@ Contact:
       type: string
       format: date-time
 
+LoginUser:
+  type: object
+  required:
+    - email
+    - password
+  properties:
+    email:
+      type: string
+      example: "user@example.com"
+    password:
+      type: string
+      format: password
+      example: "yourPassword123"
+
+NewContact:
+  type: object
+  required:
+    - name
+    - email
+    - phone
+  properties:
+    name:
+      type: string
+      example: "John Doe"
+    email:
+      type: string
+      example: "johndoe@example.com"
+    phone:
+      type: string
+      example: "+380931112233"
+
+UpdateContact:
+  type: object
+  properties:
+    name:
+      type: string
+      example: "John Doe"
+    email:
+      type: string
+      example: "johndoe@example.com"
+    phone:
+      type: string
+      example: "+380931112233"
+  description: Fields to update. At least one field must be provided.
+
 LoginData:
   type: object
   required:
@@ -52,7 +97,7 @@ LoginData:
       format: password
       example: "yourPassword123"
 
-RegisterData:
+RegisterUser:
   type: object
   required:
     - email
@@ -88,3 +133,42 @@ ErrorResponse:
     message:
       type: string
       example: "Invalid request"
+
+SuccessMessage:
+  type: object
+  properties:
+    status:
+      type: string
+      example: "success"
+    message:
+      type: string
+      example: "Operation completed successfully"
+
+RegisterData:
+  type: object
+  required:
+    - email
+    - password
+  properties:
+    email:
+      type: string
+      format: email
+      example: user@example.com
+    password:
+      type: string
+      format: password
+      minLength: 6
+      example: yourSecurePassword123
+
+AuthSuccess:
+  type: object
+  properties:
+    accessToken:
+      type: string
+      description: New access token for the user.
+    refreshToken:
+      type: string
+      description: New refresh token for the user.
+  required:
+    - accessToken
+    - refreshToken

@@ -52,4 +52,15 @@ components:
       type: http
       scheme: bearer
   schemas:
-    $ref: ../swagger/components/schemas.yaml
+    User:
+      $ref: '../swagger/components/schemas.yaml#/User'
+    Contact:
+      $ref: '../swagger/components/schemas.yaml#/Contact'
+    LoginData:
+      $ref: '../swagger/components/schemas.yaml#/LoginData'
+    RegisterData:
+      $ref: '../swagger/components/schemas.yaml#/RegisterData'
+    TokenResponse:
+      $ref: '../swagger/components/schemas.yaml#/TokenResponse'
+    ErrorResponse:
+      $ref: '../swagger/components/schemas.yaml#/ErrorResponse'

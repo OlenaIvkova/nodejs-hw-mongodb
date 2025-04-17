@@ -11,22 +11,32 @@ import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
-import swaggerUi from 'swagger-ui-express';
-import fs from "fs";
-import path from "path";
+import { swaggerDocs } from "./middlewares/swaggerDocs.js"; 
+// import swaggerUi from 'swagger-ui-express';
+// import fs from "fs";
+// import path from "path";
 
 const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
-  const swaggerDocument = fs.readFileSync(path.join(__dirname, "../docs/openapi.yaml"), "utf8");
+  // const swaggerDocument = fs.readFileSync(path.join(__dirname, "../docs/openapi.yaml"), "utf8");
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
 
-  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  const swaggerMiddleware = swaggerDocs();
+
+  if (Array.isArray(swaggerMiddleware)) {
+    app.use("/api-docs", ...swaggerMiddleware);
+  } else {
+    app.use("/api-docs", swaggerMiddleware); // fallback при помилці
+  }
+
+  //  app.use("/api-docs", ...swaggerDocs()); 
+  // app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
   app.use("/auth", authRouter);
   app.use("/contacts", authenticate, contactsRouter);

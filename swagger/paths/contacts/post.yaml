@@ -10,17 +10,17 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: '#/components/schemas/NewContact'
+        $ref: '../../components/schemas.yaml#/NewContact'
 responses:
   '201':
     description: Contact successfully created
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/Contact'
+          $ref: '../../components/schemas.yaml#/Contact'
   '400':
     description: Invalid input
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/ErrorResponse'

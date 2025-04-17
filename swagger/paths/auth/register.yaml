@@ -1,25 +1,26 @@
-post:
-  tags:
-    - Auth
-  summary: Register new user
-  operationId: registerUser
-  description: Create a new user account.
-  requestBody:
-    required: true
+tags:
+  - Auth
+summary: Register new user
+operationId: registerUser
+description: Create a new user account.
+security:
+  - bearerAuth: []  
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        $ref: '../../components/schemas.yaml#/RegisterData'
+responses:
+  '201':
+    description: User successfully registered
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/RegisterUser'
-  responses:
-    '201':
-      description: User successfully registered
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/AuthSuccess'
-    '400':
-      description: Invalid input or user already exists
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/SuccessMessage'
+  '400':
+    description: Invalid input or user already exists
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas.yaml#/ErrorResponse'

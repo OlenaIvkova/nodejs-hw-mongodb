@@ -17,10 +17,10 @@ responses:
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/Contact'
+          $ref: '../../../components/schemas.yaml#/Contact'
   '404':
     description: Contact not found
     content:
       application/json:
         schema:
-          $ref: '#/components/schemas/ErrorResponse'
+          $ref: '../../../components/schemas.yaml#/ErrorResponse'
