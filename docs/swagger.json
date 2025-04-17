@@ -125,7 +125,7 @@
               "application/json": {
                 "schema": {
                   "type": "array",
-                  "items": { "$ref": "#/components/schemas/Contact" }
+                  "items": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
                 }
               }
             }
@@ -141,7 +141,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/Contact" }
+              "schema": { "$ref": "../swagger/components/schemas.yaml#/NewContact" }
             }
           }
         },
@@ -150,7 +150,7 @@
             "description": "Контакт створено",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Contact" }
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
               }
             }
           },
@@ -176,7 +176,7 @@
             "description": "Контакт знайдений",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Contact" }
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
               }
             }
           },
@@ -199,7 +199,7 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/Contact" }
+              "schema": { "$ref": "../swagger/components/schemas.yaml#/UpdateContact" }
             }
           }
         },
@@ -208,7 +208,7 @@
             "description": "Контакт оновлено",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Contact" }
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
               }
             }
           },
@@ -278,18 +278,6 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
-      }
-    },
-    "schemas": {
-      "Contact": {
-        "type": "object",
-        "properties": {
-          "name": { "type": "string" },
-          "email": { "type": "string" },
-          "phone": { "type": "string" },
-          "photo": { "type": "string", "nullable": true }
-        },
-        "required": ["name", "email", "phone"]
       }
     }
   }
