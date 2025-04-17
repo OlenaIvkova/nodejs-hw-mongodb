@@ -1,41 +1,35 @@
 tags:
   - Contacts
-summary: Отримати всі контакти
-operationId: getContacts
-description: >
-  Цей ендпоінт повертає список усіх контактів користувача. 
-  Параметри запиту дозволяють здійснювати пагінацію та сортування.
+summary: Get all contacts
+operationId: getAllContacts
+description: Returns a list of contacts with pagination and filtering options.
 security:
   - bearerAuth: []
 parameters:
-  - in: query
-    name: page
+  - name: page
+    in: query
     required: false
     schema:
       type: integer
       default: 1
-    description: Номер сторінки для пагінації
-  - in: query
-    name: limit
+  - name: limit
+    in: query
     required: false
     schema:
       type: integer
-      default: 10
-    description: Кількість елементів на сторінці
-  - in: query
-    name: sortBy
-    required: false
-    schema:
-      type: string
-    description: Поле для сортування
+      default: 20
 responses:
   '200':
-    description: Список контактів
+    description: A list of contacts
     content:
       application/json:
         schema:
           type: array
           items:
-$ref: '../components/schemas.yaml#/Contact'
-'401':
-    description: Користувач не авторизований
+            $ref: '#/components/schemas/Contact'
+  '401':
+    description: Unauthorized
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

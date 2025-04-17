@@ -11,30 +11,24 @@ import authRouter from "./routes/auth.js";
 import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
-import { swaggerServe, swaggerDocs } from './middlewares/swaggerDocs.js';
-import path from "node:path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const UPLOAD_DIR = path.join(__dirname, '..', 'uploads');
+import swaggerUi from 'swagger-ui-express';
+import fs from "fs";
+import path from "path";
 
 const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
 
-  app.use('/uploads', express.static(UPLOAD_DIR));
-  const DOCS_DIR = path.join(__dirname, 'docs');
-  app.use('/docs', express.static(DOCS_DIR));
-  app.use('/api-docs', swaggerServe, swaggerDocs);
+  const swaggerDocument = fs.readFileSync(path.join(__dirname, "../docs/openapi.yaml"), "utf8");
 
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
 
-  app.use("/auth", authRouter);
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
+  app.use("/auth", authRouter);
   app.use("/contacts", authenticate, contactsRouter);
   
   app.use((req, res) => {

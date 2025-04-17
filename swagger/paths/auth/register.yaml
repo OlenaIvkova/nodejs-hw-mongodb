@@ -1,23 +1,25 @@
-tags:
-  - Auth
-summary: Реєстрація нового користувача
-operationId: registerUser
-description: >
-  Цей ендпоінт дозволяє зареєструвати нового користувача, надаючи електронну адресу та пароль.
-security: []  
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        properties:
-          email:
-            type: string
-          password:
-            type: string
-responses:
-  '201':
-    description: Користувача зареєстровано
-  '400':
-    description: Невірні дані
+post:
+  tags:
+    - Auth
+  summary: Register new user
+  operationId: registerUser
+  description: Create a new user account.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/RegisterUser'
+  responses:
+    '201':
+      description: User successfully registered
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSuccess'
+    '400':
+      description: Invalid input or user already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

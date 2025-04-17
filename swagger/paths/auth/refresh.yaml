@@ -1,0 +1,19 @@
+get:
+  tags:
+    - Auth
+  summary: Refresh access token
+  operationId: refreshToken
+  description: Generate new access token using a refresh token stored in HTTP-only cookie.
+  responses:
+    '200':
+      description: Token successfully refreshed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/AuthSuccess'
+    '401':
+      description: Invalid or expired refresh token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

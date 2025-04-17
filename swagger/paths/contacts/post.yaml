@@ -1,10 +1,8 @@
 tags:
   - Contacts
-summary: Створити новий контакт
+summary: Create a new contact
 operationId: createContact
-description: >
-  Цей ендпоінт дозволяє створити новий контакт для користувача.
-  Потрібно вказати всі необхідні дані.
+description: Create a new contact in the system.
 security:
   - bearerAuth: []
 requestBody:
@@ -12,20 +10,17 @@ requestBody:
   content:
     application/json:
       schema:
-        type: object
-        properties:
-          name:
-            type: string
-          email:
-            type: string
-          phone:
-            type: string
+        $ref: '#/components/schemas/NewContact'
 responses:
   '201':
-    description: Контакт створено
+    description: Contact successfully created
     content:
       application/json:
         schema:
-$ref: '../../components/schemas.yaml#/Contact'
-'400':
-  description: Помилка валідації
+          $ref: '#/components/schemas/Contact'
+  '400':
+    description: Invalid input
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
