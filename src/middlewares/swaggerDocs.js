@@ -12,6 +12,7 @@ const swaggerPath = path.join(__dirname, '../../docs/openapi.yaml');
 export const swaggerDocs = () => {
   try {
     const swaggerDoc = JSON.parse(
+
       JSON.stringify(
         require('yaml').parse(fs.readFileSync(swaggerPath, 'utf8'))
       )

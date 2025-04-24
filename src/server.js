@@ -4,14 +4,17 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import pino from "pino-http";
+import cookieParser from "cookie-parser";
+
 import contactsRouter from "./routes/contact.js";
 import errorHandler from "./middlewares/errorHandler.js";
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 import authRouter from "./routes/auth.js";
-import cookieParser from "cookie-parser";
 import authenticate from "./middlewares/authenticate.js";
 
-import { swaggerDocs } from "./middlewares/swaggerDocs.js";
+import path from "path";
+import swaggerUi from "swagger-ui-express";
+import YAML from "yamljs";
 
 const setupServer = () => {
   const app = express();
@@ -21,18 +24,19 @@ const setupServer = () => {
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
-
-  const swaggerMiddleware = swaggerDocs();
-
-  if (Array.isArray(swaggerMiddleware)) {
-    app.use("/api-docs", ...swaggerMiddleware);
-  } else {
-    app.use("/api-docs", swaggerMiddleware); 
-  }
-
+  
   app.use("/auth", authRouter);
   app.use("/contacts", authenticate, contactsRouter);
-  
+
+  app.use('/swagger', express.static(path.resolve('swagger')));
+
+  const swaggerDocument = YAML.load(path.resolve("docs/openapi.yaml"));
+  app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerDocument, { explorer: true })
+  );
+
   app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });
   });
