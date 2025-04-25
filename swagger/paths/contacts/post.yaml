@@ -1,60 +1,54 @@
 tags:
   - Contacts
 summary: "Створити новий контакт"
-description: "Створює новий контакт з обов’язковими полями name, email, phone, а також необов’язковим полем photo (файл зображення)."
+description: "Створює новий контакт для авторизованого користувача."
 operationId: createContact
 security:
   - bearerAuth: []
 requestBody:
   required: true
   content:
-    multipart/form-data:
+    application/json:
       schema:
         type: object
         required:
           - name
-          - email
-          - phone
+          - phoneNumber
         properties:
           name:
             type: string
-            description: "Ім’я контакту."
-            example: "Іван"
           email:
             type: string
             format: email
-            description: "Email адреса контакту."
-            example: "ivan@example.com"
-          phone:
+          phoneNumber:
             type: string
-            description: "Номер телефону контакту."
-            example: "+380501234567"
-          photo:
+          contactType:
             type: string
-            format: binary
-            description: "Фото контакту (файл зображення, необов’язково)."
+            enum: [personal, work, home, business]
+          isFavourite:
+            type: boolean
 responses:
   '201':
     description: "Контакт успішно створено."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/Contact'
-        example:
-          id: "625f8a2b6f1bf1234567890a"
-          name: "Іван"
-          email: "ivan@example.com"
-          phone: "+380501234567"
-          photo: "https://example.com/uploads/625f8a2b_photo.jpg"
-  '400':
-    description: "Помилка запиту. Невірні або неповні дані для створення контакту."
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: "Contact successfully created"
+            data:
+              $ref: '../../components/schemas.yaml#/Contact'
+  '401':
+    description: "Неавторизований доступ."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 400
-          message: "Bad Request"
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'
 
 # tags:
 #   - Contacts

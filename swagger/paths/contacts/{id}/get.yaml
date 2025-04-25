@@ -1,7 +1,7 @@
 tags:
   - Contacts
 summary: "Отримати контакт за ID"
-description: "Повертає детальну інформацію про контакт за його унікальним ідентифікатором."
+description: "Повертає детальну інформацію про контакт."
 operationId: getContactById
 security:
   - bearerAuth: []
@@ -18,25 +18,25 @@ responses:
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Contact'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            data:
+              $ref: '../../../components/schemas.yaml#/Contact'
   '401':
-    description: "Неавторизовано. Немає доступу до ресурсу."
+    description: "Неавторизований доступ."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 401
-          message: "Unauthorized"
+          $ref: '../../../components/schemas.yaml#/ErrorUnauthorized'
   '404':
     description: "Контакт не знайдено."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 404
-          message: "Not Found"
+          $ref: '../../../components/schemas.yaml#/ErrorNotFound'
 
 # tags:
 #   - Contacts

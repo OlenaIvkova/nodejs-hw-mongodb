@@ -2,175 +2,143 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "Contact Manager API",
+    "title": "Contacts API",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "Бекенд-додаток для управління контактами користувача з аутентифікацією, авторизацією та роботою з контактами."
+    "description": "API для роботи з контактами та авторизацією користувачів."
   },
   "servers": [
-    { "url": "http://localhost:3001" },
-    { "url": "https://nodejs-hw-mongodb-jwe2.onrender.com" }
+    {
+      "url": "http://localhost:3000"
+    },
+    {
+      "url": "https://nodejs-hw-mongodb-jwe2.onrender.com"
+    }
   ],
   "tags": [
-    { "name": "Auth", "description": "Реєстрація, вхід, вихід, оновлення сесії" },
-    { "name": "User", "description": "Отримання поточного користувача" },
-    { "name": "Contacts", "description": "CRUD операції з контактами користувача" }
-  ],
-  "security": [
-    { "bearerAuth": [] }
+    {
+      "name": "Contacts",
+      "description": "CRUD операції з контактами"
+    },
+    {
+      "name": "Auth",
+      "description": "Авторизація та сесії користувачів"
+    }
   ],
   "paths": {
-    "/auth/register": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Реєстрація нового користувача",
-        "description": "Цей ендпоінт дозволяє зареєструвати нового користувача.",
-        "operationId": "registerUser",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": { "type": "string" },
-                  "password": { "type": "string" }
-                },
-                "required": ["email", "password"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": { "description": "Користувача зареєстровано" },
-          "400": { "description": "Невірні дані" }
-        }
-      }
-    },
-    "/auth/login": {
-      "post": {
-        "tags": ["Auth"],
-        "summary": "Логін користувача",
-        "description": "Користувач входить в систему за email і паролем.",
-        "operationId": "loginUser",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "email": { "type": "string" },
-                  "password": { "type": "string" }
-                },
-                "required": ["email", "password"]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Логін успішний",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "accessToken": { "type": "string" },
-                    "refreshToken": { "type": "string" }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "description": "Невірні дані" },
-          "401": { "description": "Невірний логін або пароль" }
-        }
-      }
-    },
-    "/auth/me": {
-      "get": {
-        "tags": ["User"],
-        "summary": "Отримати поточного користувача",
-        "description": "Повертає профіль авторизованого користувача за його токеном доступу.",
-        "operationId": "getCurrentUser",
-        "security": [
-          { "bearerAuth": [] }
-        ],
-        "responses": {
-          "200": {
-            "description": "Успішна відповідь. Дані користувача.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "../swagger/components/schemas.yaml#/User"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Неавторизовано. Токен відсутній або недійсний.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "../swagger/components/schemas.yaml#/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/contacts": {
       "get": {
-        "tags": ["Contacts"],
-        "summary": "Отримати всі контакти",
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Отримати список контактів",
+        "description": "Повертає список контактів з підтримкою пагінації та сортування.",
         "operationId": "getAllContacts",
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ],
         "parameters": [
           {
             "in": "query",
             "name": "page",
-            "schema": { "type": "integer", "default": 1 },
-            "description": "Номер сторінки"
+            "schema": {
+              "type": "integer",
+              "default": 1
+            },
+            "description": "Номер сторінки для пагінації."
           },
           {
             "in": "query",
-            "name": "limit",
-            "schema": { "type": "integer", "default": 10 },
-            "description": "Кількість елементів"
+            "name": "perPage",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Кількість контактів на сторінку."
           },
           {
             "in": "query",
             "name": "sortBy",
-            "schema": { "type": "string" },
-            "description": "Поле для сортування"
+            "schema": {
+              "type": "string",
+              "default": "createdAt"
+            },
+            "description": "Поле для сортування."
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "desc"
+            },
+            "description": "Порядок сортування."
           }
         ],
         "responses": {
           "200": {
-            "description": "Список контактів",
+            "description": "Успішне отримання контактів.",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully found contacts!"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/Contact"
+                          }
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "perPage": {
+                          "type": "integer"
+                        },
+                        "totalItems": {
+                          "type": "integer"
+                        },
+                        "totalPages": {
+                          "type": "integer"
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean"
+                        },
+                        "hasNextPage": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
           },
           "401": {
-            "description": "Користувач не авторизований",
+            "description": "Неавторизований доступ.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "../swagger/components/schemas.yaml#/Error"
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
                 }
               }
             }
@@ -178,36 +146,86 @@
         }
       },
       "post": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Створити новий контакт",
+        "description": "Створює новий контакт для авторизованого користувача.",
         "operationId": "createContact",
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "../swagger/components/schemas.yaml#/NewContact"
+                "type": "object",
+                "required": [
+                  "name",
+                  "phoneNumber"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "contactType": {
+                    "type": "string",
+                    "enum": [
+                      "personal",
+                      "work",
+                      "home",
+                      "business"
+                    ]
+                  },
+                  "isFavourite": {
+                    "type": "boolean"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Контакт створено",
+            "description": "Контакт успішно створено.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact successfully created"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  }
+                }
               }
             }
           },
-          "400": {
-            "description": "Помилка валідації",
+          "401": {
+            "description": "Неавторизований доступ.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
               }
             }
           }
@@ -216,137 +234,414 @@
     },
     "/contacts/{contactId}": {
       "get": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Отримати контакт за ID",
+        "description": "Повертає детальну інформацію про контакт.",
         "operationId": "getContactById",
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ],
         "parameters": [
           {
             "in": "path",
             "name": "contactId",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            },
+            "description": "Унікальний ідентифікатор контакту."
           }
         ],
         "responses": {
           "200": {
-            "description": "Контакт знайдений",
+            "description": "Інформація про контакт.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  }
+                }
               }
             }
           },
           "401": {
-            "description": "Неавторизовано",
+            "description": "Неавторизований доступ.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
               }
             }
           },
           "404": {
-            "description": "Контакт не знайдений",
+            "description": "Контакт не знайдено.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
               }
             }
           }
         }
       },
       "patch": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Оновити контакт",
+        "description": "Оновлює контакт за ID.",
         "operationId": "updateContact",
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ],
         "parameters": [
           {
             "in": "path",
             "name": "contactId",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "requestBody": {
           "required": true,
           "content": {
-            "multipart/form-data": {
-              "schema": { "$ref": "../swagger/components/schemas.yaml#/UpdateContact" }
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "phoneNumber": {
+                    "type": "string"
+                  },
+                  "contactType": {
+                    "type": "string",
+                    "enum": [
+                      "personal",
+                      "work",
+                      "home",
+                      "business"
+                    ]
+                  },
+                  "isFavourite": {
+                    "type": "boolean"
+                  }
+                }
+              }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Контакт оновлено",
+            "description": "Контакт оновлено успішно.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Contact" }
-              }
-            }
-          },
-          "400": {
-            "description": "Невірні дані",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact successfully updated"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/Contact"
+                    }
+                  }
+                }
               }
             }
           },
           "401": {
-            "description": "Неавторизовано",
+            "description": "Неавторизований доступ.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
               }
             }
           },
           "404": {
-            "description": "Контакт не знайдений",
+            "description": "Контакт не знайдено.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
               }
             }
           }
         }
       },
       "delete": {
-        "tags": ["Contacts"],
+        "tags": [
+          "Contacts"
+        ],
         "summary": "Видалити контакт",
+        "description": "Видаляє контакт за ID.",
         "operationId": "deleteContact",
         "security": [
-          { "bearerAuth": [] }
+          {
+            "bearerAuth": []
+          }
         ],
         "parameters": [
           {
             "in": "path",
             "name": "contactId",
             "required": true,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Контакт успішно видалено"
-          },
-          "401": {
-            "description": "Неавторизовано",
+            "description": "Контакт успішно видалено.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Contact successfully deleted"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
               }
             }
           },
           "404": {
-            "description": "Контакт не знайдено",
+            "description": "Контакт не знайдено.",
             "content": {
               "application/json": {
-                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorNotFound"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Реєстрація нового користувача",
+        "operationId": "registerUser",
+        "description": "Створення облікового запису нового користувача.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Користувача успішно зареєстровано.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User successfully registered"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/User"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Невірний ввід або користувач вже існує.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Вхід користувача",
+        "operationId": "loginUser",
+        "description": "Автентифікація користувача та повернення токенів.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Успішний вхід.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Невірні облікові дані.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Вихід користувача",
+        "operationId": "logoutUser",
+        "description": "Вихід користувача шляхом інвалідації токенів.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успішний вихід.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Logout successful"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизований доступ.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Оновити токен доступу",
+        "operationId": "refreshToken",
+        "description": "Генерація нового токена доступу на основі refresh токена.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Токен успішно оновлено.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Невалідний або прострочений токен оновлення.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorUnauthorized"
+                }
               }
             }
           }
@@ -358,8 +653,186 @@
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
-        "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "scheme": "bearer"
+      }
+    },
+    "schemas": {
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Унікальний ідентифікатор контакту.",
+            "example": "612d1f6e7c1df1548b0e7f90"
+          },
+          "name": {
+            "type": "string",
+            "description": "Ім’я контакту.",
+            "example": "Іван"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "description": "Номер телефону контакту.",
+            "example": "1234567890"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email контакту.",
+            "example": "ivan@example.com"
+          },
+          "isFavourite": {
+            "type": "boolean",
+            "description": "Чи є контакт улюбленим.",
+            "example": false
+          },
+          "contactType": {
+            "type": "string",
+            "enum": [
+              "personal",
+              "work",
+              "home",
+              "business"
+            ],
+            "description": "Тип контакту.",
+            "example": "personal"
+          },
+          "photo": {
+            "type": "string",
+            "description": "URL або шлях до фото контакту.",
+            "example": "https://example.com/uploads/photo.jpg"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата створення контакту.",
+            "example": "2024-04-25T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата останнього оновлення контакту.",
+            "example": "2024-04-26T12:00:00Z"
+          }
+        }
+      },
+      "LoginData": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "user@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "yourSecurePassword123"
+          }
+        }
+      },
+      "RegisterData": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Test User"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "testuser@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "password123"
+          }
+        }
+      },
+      "AuthSuccess": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "Новий токен доступу."
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Новий токен оновлення."
+          }
+        }
+      },
+      "SuccessMessage": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 200
+          },
+          "message": {
+            "type": "string",
+            "example": "Operation completed successfully"
+          }
+        }
+      },
+      "ErrorUnauthorized": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 401
+          },
+          "message": {
+            "type": "string",
+            "example": "Something went wrong"
+          },
+          "data": {
+            "type": "string",
+            "example": "Unauthorized: Unauthorized: No token provided"
+          }
+        }
+      },
+      "ErrorNotFound": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "example": 404
+          },
+          "message": {
+            "type": "string",
+            "example": "Contact not found"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Унікальний ідентифікатор користувача.",
+            "example": "60d0fe4f5311236168a109ca"
+          },
+          "name": {
+            "type": "string",
+            "description": "Ім’я користувача.",
+            "example": "Іван Іваненко"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email користувача.",
+            "example": "ivan@example.com"
+          }
+        }
       }
     }
   }

@@ -1,7 +1,7 @@
 tags:
   - Contacts
 summary: "Отримати список контактів"
-description: "Повертає список контактів з підтримкою пагінації та сортування. Доступ лише для авторизованих користувачів."
+description: "Повертає список контактів з підтримкою пагінації та сортування."
 operationId: getAllContacts
 security:
   - bearerAuth: []
@@ -10,38 +10,66 @@ parameters:
     name: page
     schema:
       type: integer
-    description: "Номер сторінки (для пагінації)."
-    example: 1
+      default: 1
+    description: "Номер сторінки для пагінації."
   - in: query
-    name: limit
+    name: perPage
     schema:
       type: integer
+      default: 10
     description: "Кількість контактів на сторінку."
-    example: 10
   - in: query
     name: sortBy
     schema:
       type: string
-    description: "Поле, за яким здійснюється сортування контактів (наприклад, 'name', 'email')."
-    example: "name"
+      default: "createdAt"
+    description: "Поле для сортування."
+  - in: query
+    name: sortOrder
+    schema:
+      type: string
+      enum: [asc, desc]
+      default: desc
+    description: "Порядок сортування."
 responses:
   '200':
-    description: "Список контактів отримано успішно."
+    description: "Успішне отримання контактів."
     content:
       application/json:
         schema:
-          type: array
-          items:
-            $ref: '../../components/schemas.yaml#/Contact'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Successfully found contacts!"
+            data:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    $ref: '../../components/schemas.yaml#/Contact'
+                page:
+                  type: integer
+                perPage:
+                  type: integer
+                totalItems:
+                  type: integer
+                totalPages:
+                  type: integer
+                hasPreviousPage:
+                  type: boolean
+                hasNextPage:
+                  type: boolean
   '401':
-    description: "Неавторизовано. Невірний або відсутній токен доступу."
+    description: "Неавторизований доступ."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 401
-          message: "Unauthorized"
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'
 
 # tags:
 #   - Contacts

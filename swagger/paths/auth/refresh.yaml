@@ -1,20 +1,20 @@
 tags:
   - Auth
-summary: Refresh access token
+summary: "Оновити токен доступу"
 operationId: refreshToken
-description: Generate new access token using a refresh token stored in HTTP-only cookie.
+description: "Генерація нового токена доступу на основі refresh токена."
 security:
-  - bearerAuth: []  
+  - bearerAuth: []
 responses:
   '200':
-    description: Token successfully refreshed
+    description: "Токен успішно оновлено."
     content:
       application/json:
         schema:
           $ref: '../../components/schemas.yaml#/AuthSuccess'
   '401':
-    description: Invalid or expired refresh token
+    description: "Невалідний або прострочений токен оновлення."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'

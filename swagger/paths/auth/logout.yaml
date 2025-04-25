@@ -1,16 +1,27 @@
 tags:
   - Auth
-summary: User logout
+summary: "Вихід користувача"
 operationId: logoutUser
-description: Logs out the currently authenticated user by invalidating tokens.
+description: "Вихід користувача шляхом інвалідації токенів."
 security:
   - bearerAuth: []
 responses:
-  '204':
-    description: Successfully logged out
-  '401':
-    description: Unauthorized
+  '200':
+    description: "Успішний вихід."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/ErrorResponse'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Logout successful"
+  '401':
+    description: "Неавторизований доступ."
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'

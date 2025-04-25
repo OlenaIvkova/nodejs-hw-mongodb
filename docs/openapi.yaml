@@ -1,23 +1,23 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: Contacts
+  title: Contacts API
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: for working with contacts
-
-tags:
-  - name: Contacts
-    description: CRUD operations with contacts
-  - name: Auth
-    description: Authentication and user sessions
-  - name: User
-    description: Operations related to current user
+  description: API для роботи з контактами та авторизацією користувачів.
 
 servers:
   - url: http://localhost:3000
   - url: https://nodejs-hw-mongodb-jwe2.onrender.com
+
+tags:
+  - name: Contacts
+    description: CRUD операції з контактами
+  - name: Auth
+    description: Авторизація та сесії користувачів
+  # - name: User
+  #   description: Операції, пов'язані з користувачами
 
 paths:
   /contacts:
@@ -50,28 +50,29 @@ paths:
     get:
       $ref: ../swagger/paths/auth/refresh.yaml
 
-  /auth/me:
-    get:
-      $ref: ../swagger/paths/auth/me.yaml
-
 components:
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
+
   schemas:
-    User:
-      $ref: '../swagger/components/schemas.yaml#/User'
+    # User:
+    #   $ref: '../swagger/components/schemas.yaml#/User'
     Contact:
       $ref: '../swagger/components/schemas.yaml#/Contact'
     LoginData:
       $ref: '../swagger/components/schemas.yaml#/LoginData'
     RegisterData:
       $ref: '../swagger/components/schemas.yaml#/RegisterData'
-    TokenResponse:
-      $ref: '../swagger/components/schemas.yaml#/TokenResponse'
-    Error:
-      $ref: '../swagger/components/schemas.yaml#/Error'
+    AuthSuccess:
+      $ref: '../swagger/components/schemas.yaml#/AuthSuccess'
+    SuccessMessage:
+      $ref: '../swagger/components/schemas.yaml#/SuccessMessage'
+    ErrorUnauthorized:
+      $ref: '../swagger/components/schemas.yaml#/ErrorUnauthorized'
+    ErrorNotFound:
+      $ref: '../swagger/components/schemas.yaml#/ErrorNotFound'
 
 # openapi: 3.1.0
 # info:

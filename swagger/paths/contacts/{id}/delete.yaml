@@ -1,7 +1,7 @@
 tags:
   - Contacts
 summary: "Видалити контакт"
-description: "Видаляє контакт за вказаним ідентифікатором. Доступ лише для авторизованих користувачів."
+description: "Видаляє контакт за ID."
 operationId: deleteContact
 security:
   - bearerAuth: []
@@ -11,28 +11,32 @@ parameters:
     required: true
     schema:
       type: string
-    description: "Ідентифікатор контакту, який видаляється."
 responses:
   '200':
     description: "Контакт успішно видалено."
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Contact successfully deleted"
   '401':
-    description: "Неавторизовано. Немає доступу до ресурсу."
+    description: "Неавторизований доступ."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 401
-          message: "Unauthorized"
+          $ref: '../../../components/schemas.yaml#/ErrorUnauthorized'
   '404':
-    description: "Контакт не знайдено. Ймовірно, вже видалений або невірний ID."
+    description: "Контакт не знайдено."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 404
-          message: "Not Found"
+          $ref: '../../../components/schemas.yaml#/ErrorNotFound'
 
 # tags:
 #   - Contacts

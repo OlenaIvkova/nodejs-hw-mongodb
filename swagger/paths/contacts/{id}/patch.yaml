@@ -1,7 +1,7 @@
 tags:
   - Contacts
 summary: "Оновити контакт"
-description: "Оновлює вказаний контакт за ідентифікатором. Підтримується оновлення одного або декількох полів."
+description: "Оновлює контакт за ID."
 operationId: updateContact
 security:
   - bearerAuth: []
@@ -11,63 +11,53 @@ parameters:
     required: true
     schema:
       type: string
-    description: "Ідентифікатор контакту, який оновлюється."
 requestBody:
-  required: false
+  required: true
   content:
-    multipart/form-data:
+    application/json:
       schema:
         type: object
         properties:
           name:
             type: string
-            description: "Нове ім’я контакту."
           email:
             type: string
-            format: email
-            description: "Новий email контакту."
-          phone:
+          phoneNumber:
             type: string
-            description: "Новий номер телефону контакту."
-          photo:
+          contactType:
             type: string
-            format: binary
-            description: "Нове фото контакту (файл)."
+            enum: [personal, work, home, business]
+          isFavourite:
+            type: boolean
 responses:
   '200':
-    description: "Контакт успішно оновлено."
+    description: "Контакт оновлено успішно."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Contact'
-  '400':
-    description: "Помилка запиту. Невірні дані для оновлення."
-    content:
-      application/json:
-        schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 400
-          message: "Bad Request"
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: "Contact successfully updated"
+            data:
+              $ref: '../../../components/schemas.yaml#/Contact'
   '401':
-    description: "Неавторизовано. Немає доступу до ресурсу."
+    description: "Неавторизований доступ."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 401
-          message: "Unauthorized"
+          $ref: '../../../components/schemas.yaml#/ErrorUnauthorized'
   '404':
     description: "Контакт не знайдено."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/Error'
-        example:
-          statusCode: 404
-          message: "Not Found"
-
+          $ref: '../../../components/schemas.yaml#/ErrorNotFound'
+          
 # tags:
 #   - Contacts
 # summary: Update contact

@@ -1,10 +1,9 @@
 tags:
   - Auth
-summary: Register new user
+summary: "Реєстрація нового користувача"
 operationId: registerUser
-description: Create a new user account.
-security:
-  - bearerAuth: []  
+description: "Створення облікового запису нового користувача."
+security: []
 requestBody:
   required: true
   content:
@@ -13,14 +12,23 @@ requestBody:
         $ref: '../../components/schemas.yaml#/RegisterData'
 responses:
   '201':
-    description: User successfully registered
+    description: "Користувача успішно зареєстровано."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/SuccessMessage'
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: "User successfully registered"
+            data:
+              $ref: '../../components/schemas.yaml#/User'
   '400':
-    description: Invalid input or user already exists
+    description: "Невірний ввід або користувач вже існує."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'

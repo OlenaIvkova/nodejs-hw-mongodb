@@ -1,87 +1,65 @@
 User:
-      type: object
-      properties:
-        id:
-          type: string
-          description: "Унікальний ідентифікатор користувача."
-          example: "60d0fe4f5311236168a109ca"
-        name:
-          type: string
-          description: "Ім’я та прізвище користувача."
-          example: "Іван Іваненко"
-        email:
-          type: string
-          description: "Email користувача."
-          example: "ivan@example.com"
+  type: object
+  properties:
+    id:
+      type: string
+      description: "Унікальний ідентифікатор користувача."
+      example: "60d0fe4f5311236168a109ca"
+    name:
+      type: string
+      description: "Ім’я користувача."
+      example: "Іван Іваненко"
+    email:
+      type: string
+      description: "Email користувача."
+      example: "ivan@example.com"
 
 Contact:
-      type: object
-      properties:
-        id:
-          type: string
-          description: "Унікальний ідентифікатор контакту."
-          example: "612d1f6e7c1df1548b0e7f90"
-        name:
-          type: string
-          description: "Ім’я контакту."
-          example: "Іван"
-        email:
-          type: string
-          description: "Email контакту."
-          example: "ivan@example.com"
-        phone:
-          type: string
-          description: "Номер телефону контакту."
-          example: "+380501234567"
-        photo:
-          type: string
-          description: "URL або шлях до фото контакту (якщо додано)."
-          example: "https://example.com/uploads/612d1f6e7c1d_photo.jpg"
-
-LoginUser:
   type: object
-  required:
-    - email
-    - password
   properties:
-    email:
+    id:
       type: string
-      example: "user@example.com"
-    password:
-      type: string
-      format: password
-      example: "yourPassword123"
-
-NewContact:
-  type: object
-  required:
-    - name
-    - email
-    - phone
-  properties:
+      description: "Унікальний ідентифікатор контакту."
+      example: "612d1f6e7c1df1548b0e7f90"
     name:
       type: string
-      example: "John Doe"
+      description: "Ім’я контакту."
+      example: "Іван"
+    phoneNumber:
+      type: string
+      description: "Номер телефону контакту."
+      example: "1234567890"
     email:
       type: string
-      example: "johndoe@example.com"
-    phone:
+      description: "Email контакту."
+      example: "ivan@example.com"
+    isFavourite:
+      type: boolean
+      description: "Чи є контакт улюбленим."
+      example: false
+    contactType:
       type: string
-      example: "+380931112233"
-
-UpdateContact:
-  type: object
-  properties:
-    name:
+      enum:
+        - personal
+        - work
+        - home
+        - business
+      description: "Тип контакту."
+      example: "personal"
+    photo:
       type: string
-      example: "John Doe"
-    email:
+      description: "URL або шлях до фото контакту."
+      example: "https://example.com/uploads/photo.jpg"
+    createdAt:
       type: string
-      example: "johndoe@example.com"
-    phone:
+      format: date-time
+      description: "Дата створення контакту."
+      example: "2024-04-25T12:00:00Z"
+    updatedAt:
       type: string
-      example: "+380931112233"
-  description: Fields to update. At least one field must be provided.
+      format: date-time
+      description: "Дата останнього оновлення контакту."
+      example: "2024-04-26T12:00:00Z"
 
 LoginData:
   type: object
@@ -91,96 +69,258 @@ LoginData:
   properties:
     email:
       type: string
+      format: email
       example: "user@example.com"
     password:
       type: string
       format: password
-      example: "yourPassword123"
-
-RegisterUser:
-  type: object
-  required:
-    - email
-    - password
-  properties:
-    email:
-      type: string
-      example: "newuser@example.com"
-    password:
-      type: string
-      format: password
-      example: "securePass!2024"
-
-TokenResponse:
-  type: object
-  properties:
-    accessToken:
-      type: string
-    refreshToken:
-      type: string
-    user:
-      $ref: '#/User'
-
-ErrorResponse:
-  type: object
-  properties:
-    status:
-      type: string
-      example: "error"
-    code:
-      type: integer
-      example: 400
-    message:
-      type: string
-      example: "Invalid request"
-
-SuccessMessage:
-  type: object
-  properties:
-    status:
-      type: string
-      example: "success"
-    message:
-      type: string
-      example: "Operation completed successfully"
+      example: "yourSecurePassword123"
 
 RegisterData:
   type: object
   required:
+    - name
     - email
     - password
   properties:
+    name:
+      type: string
+      example: "Test User"
     email:
       type: string
       format: email
-      example: user@example.com
+      example: "testuser@example.com"
     password:
       type: string
       format: password
-      minLength: 6
-      example: yourSecurePassword123
+      example: "password123"
 
 AuthSuccess:
   type: object
   properties:
     accessToken:
       type: string
-      description: New access token for the user.
+      description: "Новий токен доступу."
     refreshToken:
       type: string
-      description: New refresh token for the user.
-  required:
-    - accessToken
-    - refreshToken
+      description: "Новий токен оновлення."
 
-Error:
-      type: object
-      properties:
-        statusCode:
-          type: integer
-          description: "HTTP-код помилки."
-          example: 401
-        message:
-          type: string
-          description: "Повідомлення про помилку."
-          example: "Unauthorized"
+SuccessMessage:
+  type: object
+  properties:
+    status:
+      type: integer
+      example: 200
+    message:
+      type: string
+      example: "Operation completed successfully"
+
+ErrorUnauthorized:
+  type: object
+  properties:
+    status:
+      type: integer
+      example: 401
+    message:
+      type: string
+      example: "Something went wrong"
+    data:
+      type: string
+      example: "Unauthorized: Unauthorized: No token provided"
+
+ErrorNotFound:
+  type: object
+  properties:
+    status:
+      type: integer
+      example: 404
+    message:
+      type: string
+      example: "Contact not found"
+
+# User:
+#       type: object
+#       properties:
+#         id:
+#           type: string
+#           description: "Унікальний ідентифікатор користувача."
+#           example: "60d0fe4f5311236168a109ca"
+#         name:
+#           type: string
+#           description: "Ім’я та прізвище користувача."
+#           example: "Іван Іваненко"
+#         email:
+#           type: string
+#           description: "Email користувача."
+#           example: "ivan@example.com"
+
+# Contact:
+#       type: object
+#       properties:
+#         id:
+#           type: string
+#           description: "Унікальний ідентифікатор контакту."
+#           example: "612d1f6e7c1df1548b0e7f90"
+#         name:
+#           type: string
+#           description: "Ім’я контакту."
+#           example: "Іван"
+#         email:
+#           type: string
+#           description: "Email контакту."
+#           example: "ivan@example.com"
+#         phone:
+#           type: string
+#           description: "Номер телефону контакту."
+#           example: "+380501234567"
+#         photo:
+#           type: string
+#           description: "URL або шлях до фото контакту (якщо додано)."
+#           example: "https://example.com/uploads/612d1f6e7c1d_photo.jpg"
+
+# LoginUser:
+#   type: object
+#   required:
+#     - email
+#     - password
+#   properties:
+#     email:
+#       type: string
+#       example: "user@example.com"
+#     password:
+#       type: string
+#       format: password
+#       example: "yourPassword123"
+
+# NewContact:
+#   type: object
+#   required:
+#     - name
+#     - email
+#     - phone
+#   properties:
+#     name:
+#       type: string
+#       example: "John Doe"
+#     email:
+#       type: string
+#       example: "johndoe@example.com"
+#     phone:
+#       type: string
+#       example: "+380931112233"
+
+# UpdateContact:
+#   type: object
+#   properties:
+#     name:
+#       type: string
+#       example: "John Doe"
+#     email:
+#       type: string
+#       example: "johndoe@example.com"
+#     phone:
+#       type: string
+#       example: "+380931112233"
+#   description: Fields to update. At least one field must be provided.
+
+# LoginData:
+#   type: object
+#   required:
+#     - email
+#     - password
+#   properties:
+#     email:
+#       type: string
+#       example: "user@example.com"
+#     password:
+#       type: string
+#       format: password
+#       example: "yourPassword123"
+
+# RegisterUser:
+#   type: object
+#   required:
+#     - email
+#     - password
+#   properties:
+#     email:
+#       type: string
+#       example: "newuser@example.com"
+#     password:
+#       type: string
+#       format: password
+#       example: "securePass!2024"
+
+# TokenResponse:
+#   type: object
+#   properties:
+#     accessToken:
+#       type: string
+#     refreshToken:
+#       type: string
+#     user:
+#       $ref: '#/User'
+
+# ErrorResponse:
+#   type: object
+#   properties:
+#     status:
+#       type: string
+#       example: "error"
+#     code:
+#       type: integer
+#       example: 400
+#     message:
+#       type: string
+#       example: "Invalid request"
+
+# SuccessMessage:
+#   type: object
+#   properties:
+#     status:
+#       type: string
+#       example: "success"
+#     message:
+#       type: string
+#       example: "Operation completed successfully"
+
+# RegisterData:
+#   type: object
+#   required:
+#     - email
+#     - password
+#   properties:
+#     email:
+#       type: string
+#       format: email
+#       example: user@example.com
+#     password:
+#       type: string
+#       format: password
+#       minLength: 6
+#       example: yourSecurePassword123
+
+# AuthSuccess:
+#   type: object
+#   properties:
+#     accessToken:
+#       type: string
+#       description: New access token for the user.
+#     refreshToken:
+#       type: string
+#       description: New refresh token for the user.
+#   required:
+#     - accessToken
+#     - refreshToken
+
+# Error:
+#       type: object
+#       properties:
+#         statusCode:
+#           type: integer
+#           description: "HTTP-код помилки."
+#           example: 401
+#         message:
+#           type: string
+#           description: "Повідомлення про помилку."
+#           example: "Unauthorized"

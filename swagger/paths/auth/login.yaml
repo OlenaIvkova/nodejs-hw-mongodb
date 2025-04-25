@@ -1,26 +1,52 @@
 tags:
   - Auth
-summary: User login
+summary: "Вхід користувача"
 operationId: loginUser
-description: Authenticate user and return access and refresh tokens.
+description: "Автентифікація користувача та повернення токенів."
+security: []
 requestBody:
   required: true
   content:
     application/json:
       schema:
-        $ref: '../../components/schemas.yaml#/LoginUser'
-security:
-  - bearerAuth: []  
+        $ref: '../../components/schemas.yaml#/LoginData'
 responses:
   '200':
-    description: Login successful
+    description: "Успішний вхід."
     content:
       application/json:
         schema:
           $ref: '../../components/schemas.yaml#/AuthSuccess'
   '401':
-    description: Invalid credentials
+    description: "Невірні облікові дані."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/ErrorUnauthorized'
+
+# tags:
+#   - Auth
+# summary: User login
+# operationId: loginUser
+# description: Authenticate user and return access and refresh tokens.
+# requestBody:
+#   required: true
+#   content:
+#     application/json:
+#       schema:
+#         $ref: '../../components/schemas.yaml#/LoginUser'
+# security:
+#   - bearerAuth: []  
+# responses:
+#   '200':
+#     description: Login successful
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../components/schemas.yaml#/AuthSuccess'
+#   '401':
+#     description: Invalid credentials
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../components/schemas.yaml#/ErrorResponse'
