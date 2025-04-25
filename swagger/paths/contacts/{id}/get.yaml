@@ -1,26 +1,66 @@
 tags:
   - Contacts
-summary: Get contact by ID
+summary: "Отримати контакт за ID"
+description: "Повертає детальну інформацію про контакт за його унікальним ідентифікатором."
 operationId: getContactById
-description: Retrieve a contact by its unique ID.
 security:
   - bearerAuth: []
 parameters:
-  - name: contactId
-    in: path
+  - in: path
+    name: contactId
     required: true
     schema:
       type: string
+    description: "Унікальний ідентифікатор контакту."
 responses:
   '200':
-    description: Contact found
+    description: "Інформація про контакт."
     content:
       application/json:
         schema:
           $ref: '../../../components/schemas.yaml#/Contact'
-  '404':
-    description: Contact not found
+  '401':
+    description: "Неавторизовано. Немає доступу до ресурсу."
     content:
       application/json:
         schema:
-          $ref: '../../../components/schemas.yaml#/ErrorResponse'
+          $ref: '../../../components/schemas.yaml#/Error'
+        example:
+          statusCode: 401
+          message: "Unauthorized"
+  '404':
+    description: "Контакт не знайдено."
+    content:
+      application/json:
+        schema:
+          $ref: '../../../components/schemas.yaml#/Error'
+        example:
+          statusCode: 404
+          message: "Not Found"
+
+# tags:
+#   - Contacts
+# summary: Get contact by ID
+# operationId: getContactById
+# description: Retrieve a contact by its unique ID.
+# security:
+#   - bearerAuth: []
+# parameters:
+#   - name: contactId
+#     in: path
+#     required: true
+#     schema:
+#       type: string
+# responses:
+#   '200':
+#     description: Contact found
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../../components/schemas.yaml#/Contact'
+#   '404':
+#     description: Contact not found
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../../components/schemas.yaml#/ErrorResponse'

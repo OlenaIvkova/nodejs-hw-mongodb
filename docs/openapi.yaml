@@ -6,11 +6,15 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   description: for working with contacts
+
 tags:
   - name: Contacts
     description: CRUD operations with contacts
   - name: Auth
     description: Authentication and user sessions
+  - name: User
+    description: Operations related to current user
+
 servers:
   - url: http://localhost:3000
   - url: https://nodejs-hw-mongodb-jwe2.onrender.com
@@ -46,6 +50,10 @@ paths:
     get:
       $ref: ../swagger/paths/auth/refresh.yaml
 
+  /auth/me:
+    get:
+      $ref: ../swagger/paths/auth/me.yaml
+
 components:
   securitySchemes:
     bearerAuth:
@@ -62,5 +70,72 @@ components:
       $ref: '../swagger/components/schemas.yaml#/RegisterData'
     TokenResponse:
       $ref: '../swagger/components/schemas.yaml#/TokenResponse'
-    ErrorResponse:
-      $ref: '../swagger/components/schemas.yaml#/ErrorResponse'
+    Error:
+      $ref: '../swagger/components/schemas.yaml#/Error'
+
+# openapi: 3.1.0
+# info:
+#   version: 1.0.0
+#   title: Contacts
+#   license:
+#     name: Apache 2.0
+#     url: http://www.apache.org/licenses/LICENSE-2.0.html
+#   description: for working with contacts
+# tags:
+#   - name: Contacts
+#     description: CRUD operations with contacts
+#   - name: Auth
+#     description: Authentication and user sessions
+# servers:
+#   - url: http://localhost:3000
+#   - url: https://nodejs-hw-mongodb-jwe2.onrender.com
+
+# paths:
+#   /contacts:
+#     get:
+#       $ref: ../swagger/paths/contacts/get.yaml
+#     post:
+#       $ref: ../swagger/paths/contacts/post.yaml
+
+#   /contacts/{contactId}:
+#     get:
+#       $ref: ../swagger/paths/contacts/{id}/get.yaml
+#     patch:
+#       $ref: ../swagger/paths/contacts/{id}/patch.yaml
+#     delete:
+#       $ref: ../swagger/paths/contacts/{id}/delete.yaml
+
+#   /auth/register:
+#     post:
+#       $ref: ../swagger/paths/auth/register.yaml
+
+#   /auth/login:
+#     post:
+#       $ref: ../swagger/paths/auth/login.yaml
+
+#   /auth/logout:
+#     post:
+#       $ref: ../swagger/paths/auth/logout.yaml
+
+#   /auth/refresh:
+#     get:
+#       $ref: ../swagger/paths/auth/refresh.yaml
+
+# components:
+#   securitySchemes:
+#     bearerAuth:
+#       type: http
+#       scheme: bearer
+#   schemas:
+#     User:
+#       $ref: '../swagger/components/schemas.yaml#/User'
+#     Contact:
+#       $ref: '../swagger/components/schemas.yaml#/Contact'
+#     LoginData:
+#       $ref: '../swagger/components/schemas.yaml#/LoginData'
+#     RegisterData:
+#       $ref: '../swagger/components/schemas.yaml#/RegisterData'
+#     TokenResponse:
+#       $ref: '../swagger/components/schemas.yaml#/TokenResponse'
+#     ErrorResponse:
+#       $ref: '../swagger/components/schemas.yaml#/ErrorResponse'

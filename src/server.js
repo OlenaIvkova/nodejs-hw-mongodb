@@ -13,10 +13,6 @@ import { swaggerDocs } from "./middlewares/swaggerDocs.js";
 import authRouter from "./routes/auth.js";
 import contactsRouter from "./routes/contact.js";
 
-// import path from "path";
-// import swaggerUi from "swagger-ui-express";
-// import YAML from "yamljs";
-
 const setupServer = () => {
   const app = express();
   const PORT = process.env.PORT || 3001;
@@ -29,15 +25,6 @@ const setupServer = () => {
   app.use("/api-docs", swaggerDocs());
   app.use("/auth", authRouter);
   app.use("/contacts", authenticate, contactsRouter);
-
-  // app.use('/swagger', express.static(path.resolve('swagger')));
-
-  // const swaggerDocument = YAML.load(path.resolve("docs/openapi.yaml"));
-  // app.use(
-  //   "/api-docs",
-  //   swaggerUi.serve,
-  //   swaggerUi.setup(swaggerDocument, { explorer: true })
-  // );
 
   app.use((req, res) => {
     res.status(404).json({ message: "Route not found" });

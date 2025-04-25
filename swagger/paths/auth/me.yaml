@@ -1,0 +1,23 @@
+tags:
+  - User
+summary: "Отримати дані поточного користувача"
+description: "Повертає профіль авторизованого користувача на основі поданого токена доступу."
+operationId: getCurrentUser
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: "Успішно. Дані поточного користувача."
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas.yaml#/User'
+  '401':
+    description: "Неавторизовано. Токен не надано або недійсний."
+    content:
+      application/json:
+        schema:
+          $ref: '../../components/schemas.yaml#/Error'
+        example:
+          statusCode: 401
+          message: "Unauthorized"

@@ -7,7 +7,7 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "Бекенд-додаток для управління контактами користувача з аутентифікацією, авторизацією та завантаженням фото."
+    "description": "Бекенд-додаток для управління контактами користувача з аутентифікацією, авторизацією та роботою з контактами."
   },
   "servers": [
     { "url": "http://localhost:3001" },
@@ -16,14 +16,13 @@
   "tags": [
     { "name": "Auth", "description": "Реєстрація, вхід, вихід, оновлення сесії" },
     { "name": "User", "description": "Отримання поточного користувача" },
-    { "name": "Contacts", "description": "CRUD операції з контактами користувача" },
-    { "name": "Upload", "description": "Завантаження або оновлення фото для контакта" }
+    { "name": "Contacts", "description": "CRUD операції з контактами користувача" }
   ],
   "security": [
     { "bearerAuth": [] }
   ],
   "paths": {
-    "/api/auth/register": {
+    "/auth/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "Реєстрація нового користувача",
@@ -51,7 +50,7 @@
         }
       }
     },
-    "/api/auth/login": {
+    "/auth/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Логін користувача",
@@ -93,11 +92,47 @@
         }
       }
     },
-    "/api/contacts": {
+    "/auth/me": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Отримати поточного користувача",
+        "description": "Повертає профіль авторизованого користувача за його токеном доступу.",
+        "operationId": "getCurrentUser",
+        "security": [
+          { "bearerAuth": [] }
+        ],
+        "responses": {
+          "200": {
+            "description": "Успішна відповідь. Дані користувача.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../swagger/components/schemas.yaml#/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизовано. Токен відсутній або недійсний.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../swagger/components/schemas.yaml#/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contacts": {
       "get": {
         "tags": ["Contacts"],
         "summary": "Отримати всі контакти",
         "operationId": "getAllContacts",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -130,18 +165,32 @@
               }
             }
           },
-          "401": { "description": "Користувач не авторизований" }
+          "401": {
+            "description": "Користувач не авторизований",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "../swagger/components/schemas.yaml#/Error"
+                }
+              }
+            }
+          }
         }
       },
       "post": {
         "tags": ["Contacts"],
         "summary": "Створити новий контакт",
         "operationId": "createContact",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
-              "schema": { "$ref": "../swagger/components/schemas.yaml#/NewContact" }
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "../swagger/components/schemas.yaml#/NewContact"
+              }
             }
           }
         },
@@ -154,15 +203,25 @@
               }
             }
           },
-          "400": { "description": "Помилка валідації" }
+          "400": {
+            "description": "Помилка валідації",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          }
         }
       }
     },
-    "/api/contacts/{contactId}": {
+    "/contacts/{contactId}": {
       "get": {
         "tags": ["Contacts"],
         "summary": "Отримати контакт за ID",
         "operationId": "getContactById",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -180,13 +239,31 @@
               }
             }
           },
-          "404": { "description": "Контакт не знайдений" }
+          "401": {
+            "description": "Неавторизовано",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Контакт не знайдений",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          }
         }
       },
       "patch": {
         "tags": ["Contacts"],
         "summary": "Оновити контакт",
         "operationId": "updateContact",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -198,7 +275,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": { "$ref": "../swagger/components/schemas.yaml#/UpdateContact" }
             }
           }
@@ -212,14 +289,39 @@
               }
             }
           },
-          "400": { "description": "Невірні дані" },
-          "404": { "description": "Контакт не знайдений" }
+          "400": {
+            "description": "Невірні дані",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          },
+          "401": {
+            "description": "Неавторизовано",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Контакт не знайдений",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          }
         }
       },
       "delete": {
         "tags": ["Contacts"],
         "summary": "Видалити контакт",
         "operationId": "deleteContact",
+        "security": [
+          { "bearerAuth": [] }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -229,45 +331,25 @@
           }
         ],
         "responses": {
-          "204": { "description": "Контакт видалено" },
-          "404": { "description": "Контакт не знайдений" }
-        }
-      }
-    },
-    "/api/contacts/{contactId}/photo": {
-      "patch": {
-        "tags": ["Upload"],
-        "summary": "Завантажити або оновити фото для контакта",
-        "operationId": "uploadContactPhoto",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "contactId",
-            "required": true,
-            "schema": { "type": "string" }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "photo": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                },
-                "required": ["photo"]
+          "200": {
+            "description": "Контакт успішно видалено"
+          },
+          "401": {
+            "description": "Неавторизовано",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
+              }
+            }
+          },
+          "404": {
+            "description": "Контакт не знайдено",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "../swagger/components/schemas.yaml#/Error" }
               }
             }
           }
-        },
-        "responses": {
-          "200": { "description": "Фото завантажено" },
-          "400": { "description": "Помилка завантаження або неправильний формат" },
-          "404": { "description": "Контакт не знайдено" }
         }
       }
     }

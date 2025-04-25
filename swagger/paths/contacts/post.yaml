@@ -1,26 +1,84 @@
 tags:
   - Contacts
-summary: Create a new contact
+summary: "Створити новий контакт"
+description: "Створює новий контакт з обов’язковими полями name, email, phone, а також необов’язковим полем photo (файл зображення)."
 operationId: createContact
-description: Create a new contact in the system.
 security:
   - bearerAuth: []
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
-        $ref: '../../components/schemas.yaml#/NewContact'
+        type: object
+        required:
+          - name
+          - email
+          - phone
+        properties:
+          name:
+            type: string
+            description: "Ім’я контакту."
+            example: "Іван"
+          email:
+            type: string
+            format: email
+            description: "Email адреса контакту."
+            example: "ivan@example.com"
+          phone:
+            type: string
+            description: "Номер телефону контакту."
+            example: "+380501234567"
+          photo:
+            type: string
+            format: binary
+            description: "Фото контакту (файл зображення, необов’язково)."
 responses:
   '201':
-    description: Contact successfully created
+    description: "Контакт успішно створено."
     content:
       application/json:
         schema:
           $ref: '../../components/schemas.yaml#/Contact'
+        example:
+          id: "625f8a2b6f1bf1234567890a"
+          name: "Іван"
+          email: "ivan@example.com"
+          phone: "+380501234567"
+          photo: "https://example.com/uploads/625f8a2b_photo.jpg"
   '400':
-    description: Invalid input
+    description: "Помилка запиту. Невірні або неповні дані для створення контакту."
     content:
       application/json:
         schema:
-          $ref: '../../components/schemas.yaml#/ErrorResponse'
+          $ref: '../../components/schemas.yaml#/Error'
+        example:
+          statusCode: 400
+          message: "Bad Request"
+
+# tags:
+#   - Contacts
+# summary: Create a new contact
+# operationId: createContact
+# description: Create a new contact in the system.
+# security:
+#   - bearerAuth: []
+# requestBody:
+#   required: true
+#   content:
+#     application/json:
+#       schema:
+#         $ref: '../../components/schemas.yaml#/NewContact'
+# responses:
+#   '201':
+#     description: Contact successfully created
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../components/schemas.yaml#/Contact'
+#   '400':
+#     description: Invalid input
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../components/schemas.yaml#/ErrorResponse'

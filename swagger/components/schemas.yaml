@@ -1,42 +1,42 @@
 User:
-  type: object
-  properties:
-    _id:
-      type: string
-      example: "660ff3fadb54d4ca34a43f84"
-    email:
-      type: string
-      example: "user@example.com"
-    createdAt:
-      type: string
-      format: date-time
-    updatedAt:
-      type: string
-      format: date-time
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Унікальний ідентифікатор користувача."
+          example: "60d0fe4f5311236168a109ca"
+        name:
+          type: string
+          description: "Ім’я та прізвище користувача."
+          example: "Іван Іваненко"
+        email:
+          type: string
+          description: "Email користувача."
+          example: "ivan@example.com"
 
 Contact:
-  type: object
-  properties:
-    _id:
-      type: string
-      example: "66123456db54d4ca34a43f85"
-    name:
-      type: string
-      example: "John Doe"
-    email:
-      type: string
-      example: "johndoe@example.com"
-    phone:
-      type: string
-      example: "+380931112233"
-    owner:
-      $ref: '#/User'
-    createdAt:
-      type: string
-      format: date-time
-    updatedAt:
-      type: string
-      format: date-time
+      type: object
+      properties:
+        id:
+          type: string
+          description: "Унікальний ідентифікатор контакту."
+          example: "612d1f6e7c1df1548b0e7f90"
+        name:
+          type: string
+          description: "Ім’я контакту."
+          example: "Іван"
+        email:
+          type: string
+          description: "Email контакту."
+          example: "ivan@example.com"
+        phone:
+          type: string
+          description: "Номер телефону контакту."
+          example: "+380501234567"
+        photo:
+          type: string
+          description: "URL або шлях до фото контакту (якщо додано)."
+          example: "https://example.com/uploads/612d1f6e7c1d_photo.jpg"
 
 LoginUser:
   type: object
@@ -172,3 +172,15 @@ AuthSuccess:
   required:
     - accessToken
     - refreshToken
+
+Error:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+          description: "HTTP-код помилки."
+          example: 401
+        message:
+          type: string
+          description: "Повідомлення про помилку."
+          example: "Unauthorized"
