@@ -14,21 +14,30 @@ parameters:
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         properties:
           name:
             type: string
+            description: "Нове ім’я контакту."
           email:
             type: string
+            description: "Новий email контакту."
           phoneNumber:
             type: string
+            description: "Новий номер телефону контакту."
           contactType:
             type: string
             enum: [personal, work, home, business]
+            description: "Новий тип контакту."
           isFavourite:
             type: boolean
+            description: "Чи є контакт улюбленим."
+          photo:
+            type: string
+            format: binary
+            description: "Нове фото контакту."
 responses:
   '200':
     description: "Контакт оновлено успішно."
@@ -57,17 +66,17 @@ responses:
       application/json:
         schema:
           $ref: '../../../components/schemas.yaml#/ErrorNotFound'
-          
+
 # tags:
 #   - Contacts
-# summary: Update contact
+# summary: "Оновити контакт"
+# description: "Оновлює контакт за ID."
 # operationId: updateContact
-# description: Update an existing contact by ID.
 # security:
 #   - bearerAuth: []
 # parameters:
-#   - name: contactId
-#     in: path
+#   - in: path
+#     name: contactId
 #     required: true
 #     schema:
 #       type: string
@@ -76,17 +85,44 @@ responses:
 #   content:
 #     application/json:
 #       schema:
-#         $ref: '../../../components/schemas.yaml#/UpdateContact'
+#         type: object
+#         properties:
+#           name:
+#             type: string
+#           email:
+#             type: string
+#           phoneNumber:
+#             type: string
+#           contactType:
+#             type: string
+#             enum: [personal, work, home, business]
+#           isFavourite:
+#             type: boolean
 # responses:
 #   '200':
-#     description: Contact successfully updated
+#     description: "Контакт оновлено успішно."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../../components/schemas.yaml#/Contact'
+#           type: object
+#           properties:
+#             status:
+#               type: integer
+#               example: 200
+#             message:
+#               type: string
+#               example: "Contact successfully updated"
+#             data:
+#               $ref: '../../../components/schemas.yaml#/Contact'
+#   '401':
+#     description: "Неавторизований доступ."
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../../components/schemas.yaml#/ErrorUnauthorized'
 #   '404':
-#     description: Contact not found
+#     description: "Контакт не знайдено."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../../components/schemas.yaml#/ErrorResponse'
+#           $ref: '../../../components/schemas.yaml#/ErrorNotFound'

@@ -8,7 +8,7 @@ security:
 requestBody:
   required: true
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         required:
@@ -17,16 +17,25 @@ requestBody:
         properties:
           name:
             type: string
+            description: "Ім’я контакту."
           email:
             type: string
             format: email
+            description: "Email контакту."
           phoneNumber:
             type: string
+            description: "Номер телефону контакту."
           contactType:
             type: string
             enum: [personal, work, home, business]
+            description: "Тип контакту."
           isFavourite:
             type: boolean
+            description: "Чи є контакт улюбленим."
+          photo:
+            type: string
+            format: binary
+            description: "Фото контакту."
 responses:
   '201':
     description: "Контакт успішно створено."
@@ -52,9 +61,9 @@ responses:
 
 # tags:
 #   - Contacts
-# summary: Create a new contact
+# summary: "Створити новий контакт"
+# description: "Створює новий контакт для авторизованого користувача."
 # operationId: createContact
-# description: Create a new contact in the system.
 # security:
 #   - bearerAuth: []
 # requestBody:
@@ -62,17 +71,42 @@ responses:
 #   content:
 #     application/json:
 #       schema:
-#         $ref: '../../components/schemas.yaml#/NewContact'
+#         type: object
+#         required:
+#           - name
+#           - phoneNumber
+#         properties:
+#           name:
+#             type: string
+#           email:
+#             type: string
+#             format: email
+#           phoneNumber:
+#             type: string
+#           contactType:
+#             type: string
+#             enum: [personal, work, home, business]
+#           isFavourite:
+#             type: boolean
 # responses:
 #   '201':
-#     description: Contact successfully created
+#     description: "Контакт успішно створено."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../components/schemas.yaml#/Contact'
-#   '400':
-#     description: Invalid input
+#           type: object
+#           properties:
+#             status:
+#               type: integer
+#               example: 201
+#             message:
+#               type: string
+#               example: "Contact successfully created"
+#             data:
+#               $ref: '../../components/schemas.yaml#/Contact'
+#   '401':
+#     description: "Неавторизований доступ."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../components/schemas.yaml#/ErrorResponse'
+#           $ref: '../../components/schemas.yaml#/ErrorUnauthorized'

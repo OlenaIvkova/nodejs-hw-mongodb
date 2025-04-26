@@ -23,30 +23,3 @@ responses:
       application/json:
         schema:
           $ref: '../../components/schemas.yaml#/ErrorUnauthorized'
-
-# tags:
-#   - Auth
-# summary: User login
-# operationId: loginUser
-# description: Authenticate user and return access and refresh tokens.
-# requestBody:
-#   required: true
-#   content:
-#     application/json:
-#       schema:
-#         $ref: '../../components/schemas.yaml#/LoginUser'
-# security:
-#   - bearerAuth: []  
-# responses:
-#   '200':
-#     description: Login successful
-#     content:
-#       application/json:
-#         schema:
-#           $ref: '../../components/schemas.yaml#/AuthSuccess'
-#   '401':
-#     description: Invalid credentials
-#     content:
-#       application/json:
-#         schema:
-#           $ref: '../../components/schemas.yaml#/ErrorResponse'

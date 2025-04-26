@@ -70,39 +70,3 @@ responses:
       application/json:
         schema:
           $ref: '../../components/schemas.yaml#/ErrorUnauthorized'
-
-# tags:
-#   - Contacts
-# summary: Get all contacts
-# operationId: getAllContacts
-# description: Returns a list of contacts with pagination and filtering options.
-# security:
-#   - bearerAuth: []
-# parameters:
-#   - name: page
-#     in: query
-#     required: false
-#     schema:
-#       type: integer
-#       default: 1
-#   - name: limit
-#     in: query
-#     required: false
-#     schema:
-#       type: integer
-#       default: 20
-# responses:
-#   '200':
-#     description: A list of contacts
-#     content:
-#       application/json:
-#         schema:
-#           type: array
-#           items:
-#             $ref: '../../components/schemas.yaml#/Contact'
-#   '401':
-#     description: Unauthorized
-#     content:
-#       application/json:
-#         schema:
-#           $ref: '../../components/schemas.yaml#/ErrorResponse'

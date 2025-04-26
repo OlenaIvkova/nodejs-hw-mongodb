@@ -160,7 +160,7 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "required": [
@@ -169,14 +169,17 @@
                 ],
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Ім’я контакту."
                   },
                   "email": {
                     "type": "string",
-                    "format": "email"
+                    "format": "email",
+                    "description": "Email контакту."
                   },
                   "phoneNumber": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Номер телефону контакту."
                   },
                   "contactType": {
                     "type": "string",
@@ -185,10 +188,17 @@
                       "work",
                       "home",
                       "business"
-                    ]
+                    ],
+                    "description": "Тип контакту."
                   },
                   "isFavourite": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Чи є контакт улюбленим."
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Фото контакту."
                   }
                 }
               }
@@ -323,18 +333,21 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Нове ім’я контакту."
                   },
                   "email": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Новий email контакту."
                   },
                   "phoneNumber": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Новий номер телефону контакту."
                   },
                   "contactType": {
                     "type": "string",
@@ -343,10 +356,17 @@
                       "work",
                       "home",
                       "business"
-                    ]
+                    ],
+                    "description": "Новий тип контакту."
                   },
                   "isFavourite": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Чи є контакт улюбленим."
+                  },
+                  "photo": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Нове фото контакту."
                   }
                 }
               }
@@ -422,25 +442,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Контакт успішно видалено.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Contact successfully deleted"
-                    }
-                  }
-                }
-              }
-            }
+          "204": {
+            "description": "Контакт успішно видалено. Немає тіла відповіді."
           },
           "401": {
             "description": "Неавторизований доступ.",

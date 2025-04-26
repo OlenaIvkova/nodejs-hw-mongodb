@@ -12,19 +12,8 @@ parameters:
     schema:
       type: string
 responses:
-  '200':
-    description: "Контакт успішно видалено."
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            status:
-              type: integer
-              example: 200
-            message:
-              type: string
-              example: "Contact successfully deleted"
+  '204':
+    description: "Контакт успішно видалено. Немає тіла відповіді."
   '401':
     description: "Неавторизований доступ."
     content:
@@ -40,27 +29,40 @@ responses:
 
 # tags:
 #   - Contacts
-# summary: Delete contact
+# summary: "Видалити контакт"
+# description: "Видаляє контакт за ID."
 # operationId: deleteContact
-# description: Delete a contact by ID.
 # security:
 #   - bearerAuth: []
 # parameters:
-#   - name: contactId
-#     in: path
+#   - in: path
+#     name: contactId
 #     required: true
 #     schema:
 #       type: string
 # responses:
 #   '200':
-#     description: Contact successfully deleted
+#     description: "Контакт успішно видалено."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../../components/schemas.yaml#/SuccessMessage'
+#           type: object
+#           properties:
+#             status:
+#               type: integer
+#               example: 200
+#             message:
+#               type: string
+#               example: "Contact successfully deleted"
+#   '401':
+#     description: "Неавторизований доступ."
+#     content:
+#       application/json:
+#         schema:
+#           $ref: '../../../components/schemas.yaml#/ErrorUnauthorized'
 #   '404':
-#     description: Contact not found
+#     description: "Контакт не знайдено."
 #     content:
 #       application/json:
 #         schema:
-#           $ref: '../../../components/schemas.yaml#/ErrorResponse'
+#           $ref: '../../../components/schemas.yaml#/ErrorNotFound'
